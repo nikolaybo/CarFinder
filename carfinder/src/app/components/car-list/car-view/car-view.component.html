@@ -1,0 +1,40 @@
+@if (car) {
+  <div class="car__view container mx-auto">
+    <div class="car__view--information flex flex-col items-center">
+      <!-- Render car details if data exists -->
+      <div class="flex items-center flex-col gap-2.5">
+        <h1 class="text-white font-extrabold">{{ car.model }}</h1>
+        <p class="text-white text-3xl font-bold">${{ (car.discounted_price ? car.discounted_price : car.price) | number: '1.2-2' }} / <small>day</small></p>
+      </div>
+      <img class="car__view--image" [src]="car.image" [alt]="car.model">
+    </div>
+
+    <div class="car__view--description my-8 py-8 px-9">
+      <h2 class="text-lg font-bold">Description</h2>
+      <p class="text-base">NISMO has become the embodiment of {{ car.model }}'s outstanding performance, inspired by the most unforgiving proving ground, the "race track".</p>
+
+      <div class="car__view--description__table my-8">
+        <h3 class="text-lg font-bold text-black">Technical Details</h3>
+        <table class="my-8">
+          <tr class="md:table-row flex flex-col">
+            <td class="py-1.5 px-5 text-sm font-extrabold border-solid border">Type Car <span class="font-semibold float-right">{{ car.type }}</span></td>
+            <td class="py-1.5 px-5 text-sm font-extrabold border-solid border">Steering <span class="font-semibold float-right">{{ car.gearbox }}</span></td>
+          </tr>
+          <tr class="md:table-row flex flex-col">
+            <td class="py-1.5 px-5 text-sm font-extrabold border-solid border">Capacity <span class="font-semibold float-right">{{ car.seats }}</span></td>
+            <td class="py-1.5 px-5 text-sm font-extrabold border-solid border">Gasoline <span class="font-semibold float-right">{{ car.fuel_consumption }}L/100km</span></td>
+          </tr>
+        </table>
+        <div class="car__view--more-info max-w-60">
+          <h3 class="text-lg font-bold">More info about {{ car.model }}</h3>
+          <img class="mt-4 mx-auto" src="/assets/images/nissan_logo.png" [alt]="car.model" />
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <ng-template #noCarData>
+    <!-- Show fallback message if no car data is available -->
+    <p>No car data available. Please go back and select a car.</p>
+  </ng-template>
+}

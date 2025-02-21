@@ -1,0 +1,18 @@
+<h2 class="my-3 text-center text-2xl">Login</h2>
+
+<div class="flex justify-center">
+  <form [formGroup]="logInform" (ngSubmit)="onSubmit()" class="flex justify-center flex-col gap-4">
+    <mat-form-field appearance="fill" subscriptSizing="dynamic">
+      <input matInput type="email" formControlName="email" class="form-control" placeholder="Email">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" subscriptSizing="dynamic">
+      <input matInput type="password" formControlName="password" class="form-control" placeholder="Password">
+    </mat-form-field>
+
+    <div class="form-group flex flex-row justify-between items-center">
+      <button mat-fab extended type="submit" [disabled]="logInform.invalid">Log In</button>
+      <p>No account? Register <a class="underline font-bold" href="/register">here</a>.</p>
+    </div>
+  </form>
+</div>

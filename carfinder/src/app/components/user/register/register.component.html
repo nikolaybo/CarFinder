@@ -1,0 +1,18 @@
+<h2 class="my-3 text-center text-2xl">Register</h2>
+
+<div class="flex justify-center">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex justify-center flex-col gap-4">
+    <mat-form-field appearance="fill" subscriptSizing="dynamic">
+      <input matInput type="text" formControlName="username" class="form-control" placeholder="Username">
+    </mat-form-field>
+    <mat-form-field appearance="fill" subscriptSizing="dynamic">
+      <input matInput type="email" formControlName="email" class="form-control" placeholder="Email">
+    </mat-form-field>
+    <mat-form-field appearance="fill" subscriptSizing="dynamic">
+      <input matInput type="password" formControlName="password" class="form-control" placeholder="Password">
+    </mat-form-field>
+    <div class="form-group">
+      <button mat-fab extended type="submit" [disabled]="form.invalid">Register</button>
+    </div>
+  </form>
+</div>

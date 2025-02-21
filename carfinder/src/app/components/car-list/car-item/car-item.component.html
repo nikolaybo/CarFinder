@@ -1,0 +1,49 @@
+<mat-card appearance="outlined" class="flex flex-col gap-7 bg-transparent border-none">
+  <mat-card-header class="pt-6">
+    <mat-card-title-group>
+      <mat-card-title class="font-bold text-xl text-black">{{ car.model }}</mat-card-title>
+      <mat-card-subtitle class="font-bold text-sm">{{ car.type }}</mat-card-subtitle>
+    </mat-card-title-group>
+    @if(showFavoriteButton) {
+      <button mat-icon-button aria-label="Add to favorite" class="text-3xl" (click)="toggleFavorite()">
+        <mat-icon>{{ isFavorite() ? 'favorite' : 'favorite_outline' }}</mat-icon>
+      </button>
+    }
+  </mat-card-header>
+  <mat-card-content>
+    <img mat-card-image class="lg:w-full" src="{{ car.image }}" alt="{{ car.model }}"/>
+  </mat-card-content>
+  <mat-card-footer class="px-4">
+    <mat-chip-set aria-label="Car details" role="list">
+      <mat-chip role="listitem">
+        <mat-icon aria-hidden="false" aria-label="Fuel Consumption">local_gas_station</mat-icon>
+        {{ car.fuel_consumption }} L
+      </mat-chip>
+      <mat-chip role="listitem">
+        <mat-icon aria-hidden="false" aria-label="Car gears">car_repair</mat-icon>
+        {{ car.gearbox }}
+      </mat-chip>
+      <mat-chip role="listitem">
+        <mat-icon aria-hidden="false" aria-label="Car seats">people_alt</mat-icon>
+        {{ car.seats }} People
+      </mat-chip>
+    </mat-chip-set>
+  </mat-card-footer>
+  <mat-card-actions class="!px-4 felx flex-row justify-between pb-6">
+    <div class="flex flex-col">
+      @if (car.discounted_price) {
+        <p class="mb-0">
+          <span class="text-black font-bold text-xl">
+            ${{ car.discounted_price | number: '1.2' }}/
+          </span>
+          <small>day</small>
+        </p>
+      }
+      <p class="mb-0 font-bold text-xl text-[#90A3BF]"
+        [class.line-through]="car.discounted_price">
+          ${{ car.price | number: '1.2' }}
+      </p>
+    </div>
+    <button class="!rounded" mat-flat-button extended (click)="goToCarView()">Rent Now</button>
+  </mat-card-actions>
+</mat-card>
