@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GlobalConstants } from '../../../common/global-constants';
-import { BottomSheetComponent } from '../../global/bottom-sheet/bottom-sheet/bottom-sheet.component';
+import { BottomSheetComponent } from '../bottom-sheet/bottom-sheet/bottom-sheet.component';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { FooterItems } from '../../../common/footer-items';
 import { Link } from '../../../interfaces/footer-links-interfaces';

@@ -1,0 +1,9 @@
+.favorites {
+  &::ng-deep {
+    app-car-item {
+      mat-card {
+        @apply bg-transparent border-none h-full justify-evenly;
+      }
+    }
+  }
+}

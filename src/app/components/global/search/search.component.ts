@@ -51,5 +51,6 @@ export class SearchComponent {
   goToCarView(car: Car) {
     this.carService.setCar(car); // Store car in the signal
     this.router.navigate(['/car-view', car.id]); // Navigate to car-view
+    this.searchResults = []; // Clear search results
   }
 }

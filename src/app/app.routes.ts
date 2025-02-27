@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { HomepageComponent } from '../app/components/homepage/homepage.component';
+import { HomepageComponent } from './components/homepage/homepage.component';
 import { LoginComponent } from './components/user/login/login.component';
 import { PageNotFoundComponent } from './components/global/page-not-found/page-not-found.component';
 import { ProfileComponent } from './components/user/profile/profile.component';
