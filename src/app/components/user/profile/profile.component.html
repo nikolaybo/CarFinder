@@ -1,7 +1,7 @@
-<div class="container mx-auto text-3xl my-4">
+<div class="container mx-auto text-3xl px-8 my-4">
   @if(favoriteCars.length > 0) {
     <h1 class="mb-4">My Profile - Favorites</h1>
-    <div class="favorites px-8 flex items-center flex-row gap-4 flex-wrap">
+    <div class="favorites flex items-center flex-row gap-4 flex-wrap">
       @for(car of favoriteCars; track car) {
         <app-car-item [car]="car" [showFavoriteButton]="false"></app-car-item>
       }

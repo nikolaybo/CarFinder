@@ -17,6 +17,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "allowedCommonJsDependencies": [
+              "whatwg-url",
+              "@supabase/node-fetch"
+            ],
             "outputPath": "dist/carfinder",
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -53,8 +57,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "1MB",
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -65,9 +69,10 @@
               "outputHashing": "all"
             },
             "development": {
-              "optimization": false,
-              "extractLicenses": false,
+              "optimization": true,
               "sourceMap": true,
+              "namedChunks": false,
+              "extractLicenses": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",

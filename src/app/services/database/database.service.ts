@@ -2,7 +2,11 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
+const supabase = createClient(environment.supabaseUrl, environment.supabaseKey,
+  {
+    global: { fetch: fetch.bind(globalThis) }
+  }
+);
 
 @Injectable({
   providedIn: 'root'
@@ -53,15 +57,20 @@ export class DatabaseService {
    * @param page Page number (starts from 1)
    * @param pageSize Number of cars per page
    */
-   async getCarsPaginated(page: number, pageSize: number) {
-    const from = (page - 1) * pageSize;
-    const to = from + pageSize - 1;
+   async getCarsPaginated(page?: number, pageSize?: number) {
+    let query = supabase
+    .from('cars')
+    .select('*')
+    .order('model', { ascending: true });
 
-    const { data, error } = await supabase
-      .from('cars')
-      .select('*')
-      .order('model', { ascending: true }) // Sort by model name (change as needed)
-      .range(from, to); // Apply pagination
+    // Apply pagination only if both page and pageSize are provided
+    if (page !== undefined && pageSize !== undefined) {
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+      query = query.range(from, to);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error('Error fetching cars:', error);
