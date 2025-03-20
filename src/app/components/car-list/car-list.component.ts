@@ -28,12 +28,12 @@ export class CarListComponent implements OnInit {
     const newCars = await this.databaseService.getCarsPaginated(this.page, this.pageSize);
 
     if (newCars.length > 0) {
-      this.cars = [...this.cars, ...newCars]; // Append instead of replace
-      this.page++; // Move to the next page
+      this.cars = [...this.cars, ...newCars];
+      this.page++;
     }
 
     if (newCars.length < this.pageSize) {
-      this.hasMoreCars = false; // Disable button if no more items to load up
+      this.hasMoreCars = false;
     }
   }
 }

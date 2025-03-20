@@ -19,8 +19,8 @@ import { AuthService } from '../../../services/auth/auth.service';
   styleUrl: './car-item.component.scss'
 })
 export class CarItemComponent {
-  @Input() car!: Car; // Receives car object from CarListComponent
-  @Input() showFavoriteButton: boolean = true; // Default is true
+  @Input() car!: Car;
+  @Input() showFavoriteButton: boolean = true;
   userId: string | undefined = '';
   isFavorite = signal(false);
 
@@ -28,15 +28,15 @@ export class CarItemComponent {
 
   async ngOnInit() {
     this.authService.getUser().subscribe(userResponse => {
-      this.userId = userResponse?.data?.user?.id; // ✅ Check if user is logged in
+      this.userId = userResponse?.data?.user?.id;
     });
     const favoriteCarIds = await this.dbService.getUserFavorites(this.userId);
     this.isFavorite.set(favoriteCarIds.includes(this.car.id));
   }
 
   goToCarView(): void {
-    this.carService.setCar(this.car); // Store car in the signal
-    this.router.navigate(['/car-view', this.car.id]); // Navigate to car-view
+    this.carService.setCar(this.car);
+    this.router.navigate(['/car-view', this.car.id]);
   }
 
   async toggleFavorite() {

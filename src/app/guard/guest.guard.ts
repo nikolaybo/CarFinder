@@ -15,13 +15,12 @@ export class GuestGuard implements CanActivate {
     return this.authService.getUser().pipe(
       map(userResponse => {
         if (userResponse?.data?.user) {
-          // Avoid race condition: Use setTimeout to prevent guard execution issues
           setTimeout(() => {
             this.router.navigate(['/']);
           }, 0);
-          return false; // 🚫 User is logged in, prevent access
+          return false;
         }
-        return true; // ✅ Allow access
+        return true;
       })
     );
   }
