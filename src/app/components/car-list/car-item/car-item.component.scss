@@ -1,0 +1,40 @@
+@use '@angular/material' as mat;
+
+// Customize the entire app. Change :root to your selector if you want to scope the styles.
+:root {
+  @include mat.chips-overrides((
+    outline-color: transparent,
+    outline-width: 0px,
+    disabled-outline-color: transparent,
+  ));
+}
+
+::ng-deep .mdc-evolution-chip-set__chips {
+  @apply flex justify-center items-center gap-4 !flex-nowrap !mr-0 px-7;
+}
+
+::ng-deep .mdc-evolution-chip-set__chips {
+  .mdc-evolution-chip__action {
+    &::before {
+      border: none !important;
+    }
+
+    .mdc-evolution-chip__text-label {
+      @apply flex items-center gap-1 !text-[#90A3BF];
+    }
+  }
+}
+
+::ng-deep mat-card {
+  mat-card-content {
+    img {
+      @apply lg:h-[140px] w-auto h-auto max-h-[140px] mx-auto;
+    }
+  }
+
+  mat-card-actions {
+    button {
+      @apply py-2.5 !bg-[#3563E9] !px-[22px];
+    }
+  }
+}

@@ -1,0 +1,14 @@
+<div class="container mx-auto my-5 flex lg:flex-row card-list justify-center">
+  @for (car of cars; track car.id) {
+    <app-car-item class="car-list__card lg:basis-1/4 basis-full max-w-full gap-9"
+     [car]="car">
+    </app-car-item>
+  }
+
+  <!-- Load More Button -->
+  <div class="w-full flex justify-center my-5">
+    <button mat-button color="primary" (click)="loadCars()" [hidden]="!hasMoreCars" class="card-list__more !rounded">
+      Show more
+    </button>
+  </div>
+</div>

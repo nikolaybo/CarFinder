@@ -1,0 +1,22 @@
+<nav aria-label="Main menu">
+  <ul class="flex flex-row items-center gap-2">
+    @if (!isLoggedIn) {
+      <li>
+        <button mat-icon-button aria-label="Log In" class="!inline-flex !w-auto">
+          <a href="/login" class="z-10 text-base -tracking-widest text-center text-gray-600">Log In</a>
+        </button>
+      </li>
+    } @else {
+      <li>
+        <button mat-icon-button aria-label="Favorite cars" class="!inline-flex !w-auto">
+          <a class="text-base z-10 -tracking-widest text-center text-gray-600" href="/profile">Favorite</a>
+        </button>
+      </li>
+      <li>
+        <button mat-icon-button aria-label="Log out" (click)="logOut()" class="!inline-flex !w-auto">
+          <a class="text-base -tracking-widest text-center text-gray-600">Log Out</a>
+        </button>
+      </li>
+    }
+  </ul>
+</nav>

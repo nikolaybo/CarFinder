@@ -1,0 +1,39 @@
+.car__view {
+  &--information {
+    @apply bg-[#787878] py-[30px] gap-[100px];
+
+    h1 {
+      @apply text-5xl/[63px];
+    }
+  }
+
+  &--image {
+    @apply max-h-[302px];
+  }
+
+  &--description {
+    h2 {
+      @apply text-[#1A202C];
+    }
+
+    p {
+      @apply text-[#596780];
+    }
+  }
+
+  &--description__table {
+    table {
+      @apply w-full max-w-[648px];
+
+      tr {
+        td {
+          @apply text-[#90A3BF] border-[#B4B4B4];
+
+          span {
+            @apply text-[#596780];
+          }
+        }
+      }
+    }
+  }
+}

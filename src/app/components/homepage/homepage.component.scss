@@ -1,0 +1,29 @@
+.homepage {
+  &__heroimage {
+    background-image: url("/assets/images/hero_image.png");
+
+    @media (max-width: 768px) {
+      background-image: url("/assets/images/hero_image_small.png");
+    }
+
+    @apply bg-cover bg-center h-[505px] px-[35px] py-[100px];
+
+    &--content {
+      @apply max-w-[396px];
+
+      h1 {
+        @apply tracking-tight;
+      }
+
+      p {
+        @apply tracking-tight max-w-[284px];
+      }
+    }
+
+    button {
+      background-color: var(--button-color);
+
+      @apply h-14 w-[154px];
+    }
+  }
+}

@@ -1,0 +1,28 @@
+<div class="header__search relative">
+  <form class="header__search--form">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="rounded-full">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        placeholder="Search for your car..."
+        [ngModelOptions]="{standalone: true}">
+    </mat-form-field>
+  </form>
+
+  <!-- Search Results Dropdown -->
+   @if(searchResults.length > 0) {
+    <div class="search-results mt-1 shadow-md">
+      <ul>
+        @for(car of searchResults; track car) {
+          <li (click)="goToCarView(car)" class="flex flex-row items-center gap-4 border-b-1 border-solid border-gray-200">
+            <img [src]="car.image" [alt]="car.model" class="car-image">
+            <span>{{ car.model }} - {{ car.type }} - ${{ (car.discounted_price ? car.discounted_price : car.price) | number: '1.2-2' }} / day</span>
+          </li>
+        }
+      </ul>
+    </div>
+   }
+</div>
