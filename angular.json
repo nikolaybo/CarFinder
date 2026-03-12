@@ -69,10 +69,10 @@
               "outputHashing": "all"
             },
             "development": {
-              "optimization": true,
+              "optimization": false,
               "sourceMap": true,
-              "namedChunks": false,
-              "extractLicenses": true,
+              "namedChunks": true,
+              "extractLicenses": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",

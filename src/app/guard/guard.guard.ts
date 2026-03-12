@@ -1,26 +1,15 @@
-import { Injectable, inject } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthGuard implements CanActivate {
-  authService = inject(AuthService);
-  router = inject(Router);
-
-  canActivate(): Observable<boolean> {
-    return this.authService.getUser().pipe(
-      map(userResponse => {
-        if (userResponse?.data?.user) {
-          return true;
-        } else {
-          this.router.navigate(['/login']);
-          return false;
-        }
-      })
-    );
-  }
-}
+export const authGuard: CanActivateFn = () => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+  return auth.getUser().pipe(
+    take(1),
+    map(userResponse =>
+      userResponse?.data?.user ? true : router.createUrlTree(['/login'])
+    )
+  );
+};

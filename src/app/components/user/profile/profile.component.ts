@@ -1,39 +1,50 @@
-import { Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { switchMap, take } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { DatabaseService } from '../../../services/database/database.service';
-import { Car } from '../../../interfaces/car-interface';
 import { AuthService } from '../../../services/auth/auth.service';
 import { CarItemComponent } from '../../car-list/car-item/car-item.component';
+import { Car } from '../../../interfaces/car-interface';
+import { TranslatePipe } from '../../../common/pipes/translate.pipe';
 
 @Component({
   selector: 'app-profile',
-  imports: [CarItemComponent],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CarItemComponent, RouterLink, MatButtonModule, MatIconModule, TranslatePipe],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss'
+  styleUrl: './profile.component.scss',
 })
-export class ProfileComponent {
-  userId: string | undefined = ''; // Retrieve from auth
-  favoriteCars: Car[] = [];
+export class ProfileComponent implements OnInit {
+  readonly favoriteCars = signal<Car[]>([]);
+  readonly isLoading = signal(false);
 
-  constructor(private dbService: DatabaseService, private authService: AuthService) {}
+  private readonly dbService = inject(DatabaseService);
+  private readonly authService = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  async ngOnInit() {
-    this.authService.getUser().subscribe(userResponse => {
-      this.userId = userResponse?.data?.user?.id; // ✅ Check if user is logged in
+  ngOnInit(): void {
+    this.isLoading.set(true);
+
+    this.authService.currentUser$.pipe(
+      take(1),
+      switchMap(user => user?.id ? this.dbService.getUserFavorites(user.id) : of([] as string[])),
+      switchMap(ids => ids.length ? this.dbService.getCarsByIds(ids) : of([] as Car[])),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(cars => {
+      this.favoriteCars.set(cars);
+      this.isLoading.set(false);
     });
-    if (this.userId) {
-      // Fetch favorite car IDs
-      const favoriteCarsData = await this.dbService.getUserFavorites(this.userId);
-
-      if (favoriteCarsData.length === 0) {
-        console.error('No favorite cars found.');
-        return;
-      }
-
-      const favoriteCarIds = favoriteCarsData.map((fav: any) => fav); // Extract car IDs
-
-      // Fetch full car details
-      this.favoriteCars = await this.dbService.getCarsByIds(favoriteCarIds);
-    }
   }
-
 }

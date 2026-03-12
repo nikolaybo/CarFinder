@@ -1,10 +1,10 @@
-import { Type } from "@angular/core";
+import type { Type } from '@angular/core';
 
 export type Links = {
-  links: Link[];
-}
+  readonly links: readonly Link[];
+};
 
 export type Link = {
-  title: string;
-  component: Type<any>;
-}
+  readonly title: string;
+  readonly component: Type<unknown>;
+};

@@ -1,34 +1,67 @@
-@use '@angular/material' as mat;
+.car-grid-wrap {
+  padding: 40px 48px 80px;
 
-// Customize the entire app. Change :root to your selector if you want to scope the styles.
-.car-list__card {
-  @include mat.card-overrides((
-    title-text-font: 'Lato',
-    title-text-size: 22px,
-    title-text-weight: 700,
-    subtitle-text-color: #90A3BF,
-    subtitle-text-font: 'Lato',
-    subtitle-text-size: 14px,
-    subtitle-text-weight: 700,
-    outlined-container-color: transparent,
-    outlined-outline-color: transparent,
-  ));
-}
+  @media (max-width: 768px) { padding: 32px 24px 64px; }
 
-.card-list {
-  @apply flex-wrap gap-[70px] px-[27px];
+  &__spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 60px 0;
 
-  &__card {
-    @apply lg:max-w-[350px];
+    &-text {
+      color: #90A3BF;
+      font-size: 15px;
+      font-weight: 500;
+    }
   }
 
   &__more {
-    @apply bg-[#787878] text-white px-5 py-2.5 font-bold !text-base min-h-[44px];
+    display: flex;
+    justify-content: center;
+    padding: 48px 0 0;
+  }
 
-    ::ng-deep {
-      .mdc-button__label {
-        @apply px-5;
-      }
+  &__more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff !important;
+    color: #3563E9 !important;
+    border: 2px solid #3563E9 !important;
+    border-radius: 12px !important;
+    padding: 12px 32px !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    height: auto !important;
+    transition: all 0.22s ease !important;
+
+    mat-icon {
+      transition: transform 0.22s ease;
+    }
+
+    &:hover:not(:disabled) {
+      background: #3563E9 !important;
+      color: #fff !important;
+
+      mat-icon { transform: translateY(3px); }
+    }
+
+    &:disabled {
+      opacity: 0.6 !important;
+      cursor: not-allowed !important;
     }
   }
+}
+
+// ─── Grid ─────────────────────────────────────────────────────────────────────
+.car-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+
+  @media (max-width: 1200px) { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 900px)  { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 560px)  { grid-template-columns: 1fr; }
 }

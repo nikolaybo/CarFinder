@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideRouter } from '@angular/router';
 import { CarViewComponent } from './car-view.component';
 
 describe('CarViewComponent', () => {
@@ -8,9 +8,9 @@ describe('CarViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CarViewComponent]
-    })
-    .compileComponents();
+      imports: [CarViewComponent],
+      providers: [provideRouter([])],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CarViewComponent);
     component = fixture.componentInstance;

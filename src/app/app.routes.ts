@@ -1,74 +1,48 @@
 import { Routes } from '@angular/router';
-import { HomepageComponent } from './components/homepage/homepage.component';
-import { LoginComponent } from './components/user/login/login.component';
-import { PageNotFoundComponent } from './components/global/page-not-found/page-not-found.component';
-import { ProfileComponent } from './components/user/profile/profile.component';
-import { RegisterComponent } from './components/user/register/register.component';
-import { CarViewComponent } from './components/car-list/car-view/car-view.component';
-import { AuthGuard } from './guard/guard.guard';
-import { GuestGuard } from './guard/guest.guard';
+import { authGuard } from './guard/guard.guard';
+import { guestGuard } from './guard/guest.guard';
 
 export const routes: Routes = [
   {
     path: '',
-    component: HomepageComponent,
-    data: {
-      title: "Homepage",
-      showInNavbar: false,
-      showInFooter: false,
-    },
-    canActivate: [AuthGuard],
-  }, // Default route
+    loadComponent: () =>
+      import('./components/homepage/homepage.component').then(m => m.HomepageComponent),
+    data: { title: 'Homepage', showInNavbar: false, showInFooter: false },
+    // canActivate: [authGuard],
+  },
   {
     path: 'car-view/:id',
-    component: CarViewComponent,
-    data: {
-      title: "Car View",
-      showInNavbar: false,
-      showInFooter: false,
-    },
-    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import('./components/car-list/car-view/car-view.component').then(m => m.CarViewComponent),
+    data: { title: 'Car View', showInNavbar: false, showInFooter: false },
+    canActivate: [authGuard],
   },
   {
     path: 'login',
-    component: LoginComponent,
-    data: {
-      title: "Log in",
-      showInNavbar: true,
-      showInFooter: false,
-    },
-    canActivate: [GuestGuard],
+    loadComponent: () =>
+      import('./components/user/login/login.component').then(m => m.LoginComponent),
+    data: { title: 'Log in', showInNavbar: true, showInFooter: false },
+    canActivate: [guestGuard],
   },
   {
     path: 'register',
-    component: RegisterComponent,
-    data: {
-      title: "Register",
-      showInNavbar: true,
-      showInFooter: false,
-    },
-    canActivate: [GuestGuard],
+    loadComponent: () =>
+      import('./components/user/register/register.component').then(m => m.RegisterComponent),
+    data: { title: 'Register', showInNavbar: true, showInFooter: false },
+    canActivate: [guestGuard],
   },
   {
     path: 'profile',
-    component: ProfileComponent,
-    data: {
-      title: "Profile",
-      showInNavbar: true,
-      showInFooter: false,
-    },
-    canActivate: [AuthGuard],
-    children: [
-      {
-        path: 'favorite', // child route path
-        component: ProfileComponent, // child route component that the router renders
-      },
-    ]
+    loadComponent: () =>
+      import('./components/user/profile/profile.component').then(m => m.ProfileComponent),
+    data: { title: 'Profile', showInNavbar: true, showInFooter: false },
+    // canActivate: [authGuard],
   },
   {
     path: '**',
-    redirectTo: '',
-    pathMatch: 'full',
-    component: PageNotFoundComponent,
-  }, // Fallback
+    loadComponent: () =>
+      import('./components/global/page-not-found/page-not-found.component').then(
+        m => m.PageNotFoundComponent
+      ),
+  },
 ];

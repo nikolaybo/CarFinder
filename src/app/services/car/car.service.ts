@@ -1,16 +1,16 @@
 import { Injectable, Signal, signal } from '@angular/core';
+import { Car } from '../../interfaces/car-interface';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class CarService {
-  private selectedCar = signal<any>(null); // Stores the selected car
+  private readonly _selectedCar = signal<Car | null>(null);
+  readonly selectedCar: Signal<Car | null> = this._selectedCar.asReadonly();
 
-  setCar(car: any) {
-    this.selectedCar.set(car);
+  setCar(car: Car): void {
+    this._selectedCar.set(car);
   }
 
-  getCar(): Signal<any> {
-    return this.selectedCar;
+  getCar(): Signal<Car | null> {
+    return this._selectedCar;
   }
 }

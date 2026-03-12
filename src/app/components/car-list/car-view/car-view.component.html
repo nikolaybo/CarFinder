@@ -1,40 +1,128 @@
-@if (car) {
-  <div class="car__view container mx-auto">
-    <div class="car__view--information flex flex-col items-center">
-      <!-- Render car details if data exists -->
-      <div class="flex items-center flex-col gap-2.5">
-        <h1 class="text-white font-extrabold">{{ car.model }}</h1>
-        <p class="text-white text-3xl font-bold">${{ (car.discounted_price ? car.discounted_price : car.price) | number: '1.2-2' }} / <small>day</small></p>
-      </div>
-      <img class="car__view--image" [src]="car.image" [alt]="car.model">
-    </div>
+@if (car(); as c) {
+  <div class="car-view">
 
-    <div class="car__view--description my-8 py-8 px-9">
-      <h2 class="text-lg font-bold">Description</h2>
-      <p class="text-base">NISMO has become the embodiment of {{ car.model }}'s outstanding performance, inspired by the most unforgiving proving ground, the "race track".</p>
+    <!-- Hero banner -->
+    <div class="car-view__hero">
+      <div class="car-view__hero-inner container mx-auto">
+        <a class="car-view__back" [routerLink]="['/']"
+           aria-label="Back to all cars">
+          <mat-icon>arrow_back</mat-icon>
+          <span class="car-view__back-label">{{ 'carview.back' | translate }}</span>
+        </a>
 
-      <div class="car__view--description__table my-8">
-        <h3 class="text-lg font-bold text-black">Technical Details</h3>
-        <table class="my-8">
-          <tr class="md:table-row flex flex-col">
-            <td class="py-1.5 px-5 text-sm font-extrabold border-solid border">Type Car <span class="font-semibold float-right">{{ car.type }}</span></td>
-            <td class="py-1.5 px-5 text-sm font-extrabold border-solid border">Steering <span class="font-semibold float-right">{{ car.gearbox }}</span></td>
-          </tr>
-          <tr class="md:table-row flex flex-col">
-            <td class="py-1.5 px-5 text-sm font-extrabold border-solid border">Capacity <span class="font-semibold float-right">{{ car.seats }}</span></td>
-            <td class="py-1.5 px-5 text-sm font-extrabold border-solid border">Gasoline <span class="font-semibold float-right">{{ car.fuel_consumption }}L/100km</span></td>
-          </tr>
-        </table>
-        <div class="car__view--more-info max-w-60">
-          <h3 class="text-lg font-bold">More info about {{ car.model }}</h3>
-          <img class="mt-4 mx-auto" src="/assets/images/nissan_logo.png" [alt]="car.model" />
+        <div class="car-view__hero-content">
+          <div class="car-view__hero-text anim-left">
+            <h1 class="car-view__model">{{ c.model }}</h1>
+            <p class="car-view__type">{{ c.type }}</p>
+            <div class="car-view__hero-price">
+              @if (c.discounted_price) {
+                <span class="car-view__price-main">${{ c.discounted_price | number:'1.2-2' }}<small class="car-view__price-suffix">/day</small></span>
+                <span class="car-view__price-old">${{ c.price | number:'1.2-2' }}</span>
+              } @else {
+                <span class="car-view__price-main">${{ c.price | number:'1.2-2' }}<small class="car-view__price-suffix">/day</small></span>
+              }
+            </div>
+          </div>
+
+          <div class="car-view__hero-img-wrap anim-fade">
+            <img
+              class="car-view__hero-img animate-float"
+              [src]="c.image"
+              [alt]="c.model + ' — full view'"
+            />
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Detail card -->
+    <div class="car-view__detail container mx-auto">
+      <div class="car-view__card">
+
+        <!-- Description -->
+        <section class="car-view__section">
+          <h2 class="car-view__section-title">{{ 'carview.about' | translate }}</h2>
+          <p class="car-view__description">
+            The <strong class="car-view__description-model">{{ c.model }}</strong> is a premium {{ c.type | lowercase }} offering
+            exceptional comfort, performance, and style — perfect for every journey.
+            Whether city commuting or cross-country adventures, it delivers a refined
+            driving experience at an unbeatable daily rate.
+          </p>
+        </section>
+
+        <!-- Specs grid -->
+        <section class="car-view__section">
+          <h2 class="car-view__section-title">{{ 'carview.specs' | translate }}</h2>
+          <div class="car-view__specs" role="list" aria-label="Car specifications">
+
+            <div class="car-view__spec" role="listitem">
+              <div class="car-view__spec-icon">
+                <mat-icon aria-hidden="true">directions_car</mat-icon>
+              </div>
+              <div class="car-view__spec-info">
+                <span class="car-view__spec-label">{{ 'carview.spec.type' | translate }}</span>
+                <span class="car-view__spec-value">{{ c.type }}</span>
+              </div>
+            </div>
+
+            <div class="car-view__spec" role="listitem">
+              <div class="car-view__spec-icon">
+                <mat-icon aria-hidden="true">settings</mat-icon>
+              </div>
+              <div class="car-view__spec-info">
+                <span class="car-view__spec-label">{{ 'carview.spec.transmission' | translate }}</span>
+                <span class="car-view__spec-value">{{ c.gearbox }}</span>
+              </div>
+            </div>
+
+            <div class="car-view__spec" role="listitem">
+              <div class="car-view__spec-icon">
+                <mat-icon aria-hidden="true">people_alt</mat-icon>
+              </div>
+              <div class="car-view__spec-info">
+                <span class="car-view__spec-label">{{ 'carview.spec.capacity' | translate }}</span>
+                <span class="car-view__spec-value">{{ c.seats }} Seats</span>
+              </div>
+            </div>
+
+            <div class="car-view__spec" role="listitem">
+              <div class="car-view__spec-icon">
+                <mat-icon aria-hidden="true">local_gas_station</mat-icon>
+              </div>
+              <div class="car-view__spec-info">
+                <span class="car-view__spec-label">{{ 'carview.spec.fuel' | translate }}</span>
+                <span class="car-view__spec-value">{{ c.fuel_consumption }} L/100km</span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        @if (c.additional_info?.length) {
+          <section class="car-view__section">
+            <h2 class="car-view__section-title">{{ 'carview.extras' | translate }}</h2>
+            <ul class="car-view__extras">
+              @for (info of c.additional_info; track info) {
+                <li class="car-view__extras-item">
+                  <mat-icon aria-hidden="true">check_circle</mat-icon>
+                  {{ info }}
+                </li>
+              }
+            </ul>
+          </section>
+        }
+
+      </div>
+    </div>
+
   </div>
+
 } @else {
-  <ng-template #noCarData>
-    <!-- Show fallback message if no car data is available -->
-    <p>No car data available. Please go back and select a car.</p>
-  </ng-template>
+  <div class="car-view__empty container mx-auto">
+    <mat-icon>directions_car</mat-icon>
+    <p class="car-view__empty-text">
+      <span class="car-view__empty-msg">{{ 'carview.empty' | translate }}</span>
+      <a class="car-view__empty-link" [routerLink]="['/']">{{ 'carview.browse' | translate }}</a>
+    </p>
+  </div>
 }

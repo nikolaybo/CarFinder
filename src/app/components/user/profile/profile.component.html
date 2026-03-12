@@ -1,12 +1,45 @@
-<div class="container mx-auto text-3xl px-8 my-4">
-  @if(favoriteCars.length > 0) {
-    <h1 class="mb-4">My Profile - Favorites</h1>
-    <div class="favorites flex items-center flex-row gap-4 flex-wrap">
-      @for(car of favoriteCars; track car) {
-        <app-car-item [car]="car" [showFavoriteButton]="false"></app-car-item>
-      }
+<!-- Profile hero -->
+<div class="profile-hero">
+  <div class="profile-hero__inner container mx-auto">
+    <div class="profile-hero__avatar">
+      <mat-icon aria-hidden="true">person</mat-icon>
+    </div>
+    <div class="profile-hero__text">
+      <h1 class="profile-hero__title">{{ 'profile.title' | translate }}</h1>
+      <p class="profile-hero__sub">{{ 'profile.sub' | translate }}</p>
+    </div>
   </div>
+</div>
+
+<!-- Content -->
+<div class="profile-content container mx-auto">
+
+  @if (isLoading()) {
+    <div class="profile-skeleton" role="status" aria-live="polite" aria-label="Loading favorites">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="profile-skeleton__card"></div>
+      }
+    </div>
+
+  } @else if (favoriteCars().length > 0) {
+    <div class="profile-grid">
+      @for (car of favoriteCars(); track car.id) {
+        <app-car-item [car]="car" [showFavoriteButton]="false" />
+      }
+    </div>
+
   } @else {
-    <p>No favorite cars yet!</p>
+    <div class="profile-empty">
+      <div class="profile-empty__icon">
+        <mat-icon>favorite_border</mat-icon>
+      </div>
+      <h2 class="profile-empty__title">{{ 'profile.empty.title' | translate }}</h2>
+      <p class="profile-empty__desc">{{ 'profile.empty.desc' | translate }}</p>
+      <a [routerLink]="['/']" mat-flat-button class="profile-empty__btn">
+        <mat-icon>search</mat-icon>
+        {{ 'profile.empty.btn' | translate }}
+      </a>
+    </div>
   }
+
 </div>

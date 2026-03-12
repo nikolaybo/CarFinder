@@ -1,18 +1,63 @@
-<h2 class="my-3 text-center text-2xl">Login</h2>
+<div class="auth-layout">
 
-<div class="flex justify-center">
-  <form [formGroup]="logInform" (ngSubmit)="onSubmit()" class="flex justify-center flex-col gap-4">
-    <mat-form-field appearance="fill" subscriptSizing="dynamic">
-      <input matInput type="email" formControlName="email" class="form-control" placeholder="Email">
-    </mat-form-field>
-
-    <mat-form-field appearance="fill" subscriptSizing="dynamic">
-      <input matInput type="password" formControlName="password" class="form-control" placeholder="Password">
-    </mat-form-field>
-
-    <div class="form-group flex flex-row justify-between items-center">
-      <button mat-fab extended type="submit" [disabled]="logInform.invalid">Log In</button>
-      <p>No account? Register <a class="underline font-bold" href="/register">here</a>.</p>
+  <!-- Left panel — branding -->
+  <div class="auth-panel auth-panel--brand" aria-hidden="true">
+    <div class="auth-panel__inner">
+      <img class="auth-panel__logo" [src]="logo" width="148" height="44" alt="Car Finder logo">
+      <h2 class="auth-panel__headline">
+        {{ 'login.headline' | translate }}<br>
+        <span class="auth-panel__slot" [appSlotText]="'login.slot' | translate"></span>
+      </h2>
+      <p class="auth-panel__sub">{{ 'login.sub' | translate }}</p>
+      <img class="auth-panel__car" src="assets/images/cars/car-hero.png" alt="" loading="eager">
     </div>
-  </form>
+  </div>
+
+  <!-- Right panel — form -->
+  <div class="auth-panel auth-panel--form">
+    <div class="auth-panel__form-wrap">
+      <div class="auth-panel__heading">
+        <h1 class="auth-panel__title">{{ 'login.title' | translate }}</h1>
+        <p class="auth-panel__desc">{{ 'login.desc' | translate }}</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate class="auth-form">
+
+        <mat-form-field appearance="outline" floatLabel="always" subscriptSizing="dynamic" class="auth-form__field">
+          <mat-label>{{ 'login.email' | translate }}</mat-label>
+          <mat-icon matPrefix>mail_outline</mat-icon>
+          <input matInput class="auth-form__input" type="email" formControlName="email" autocomplete="email" [placeholder]="ts.t('placeholder.email')">
+          @if (loginForm.get('email') | formError; as errorMsg) {
+            <mat-error>{{ errorMsg }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" floatLabel="always" subscriptSizing="dynamic" class="auth-form__field">
+          <mat-label>{{ 'login.password' | translate }}</mat-label>
+          <mat-icon matPrefix>lock_outline</mat-icon>
+          <input matInput class="auth-form__input" type="password" formControlName="password" autocomplete="current-password" [placeholder]="ts.t('placeholder.password')">
+          @if (loginForm.get('password') | formError; as errorMsg) {
+            <mat-error>{{ errorMsg }}</mat-error>
+          }
+        </mat-form-field>
+
+        <button
+          class="auth-form__btn"
+          type="submit"
+          [disabled]="loginForm.invalid"
+          mat-flat-button
+        >
+          <mat-icon>login</mat-icon>
+          {{ 'login.submit' | translate }}
+        </button>
+
+      </form>
+
+      <p class="auth-panel__switch">
+        {{ 'login.switch' | translate }}
+        <a class="auth-panel__switch-link" [routerLink]="['/register']">{{ 'login.switch.link' | translate }}</a>
+      </p>
+    </div>
+  </div>
+
 </div>

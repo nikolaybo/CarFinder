@@ -1,41 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { GlobalConstants } from '../../../common/global-constants';
-import { BottomSheetComponent } from '../bottom-sheet/bottom-sheet/bottom-sheet.component';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { FooterItems } from '../../../common/footer-items';
-import { Link } from '../../../interfaces/footer-links-interfaces';
+import { APP_CONSTANTS } from '../../../common/global-constants';
+import { BottomSheetComponent } from '../bottom-sheet/bottom-sheet/bottom-sheet.component';
+import { FOOTER_ITEMS } from '../../../common/footer-items';
+import type { Link } from '../../../interfaces/footer-links-interfaces';
+import { TranslatePipe } from '../../../common/pipes/translate.pipe';
 
 @Component({
   selector: 'app-footer',
-  imports: [],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink, MatIconModule, TranslatePipe],
   templateUrl: './footer.component.html',
-  styleUrl: './footer.component.scss'
+  styleUrl: './footer.component.scss',
 })
-export class FooterComponent implements OnInit {
-  logo: string = GlobalConstants.appLogo;
-  title: string = GlobalConstants.appTitle;
-  currentYear: number = new Date().getFullYear();
-  copyrightText: string = `© ${this.currentYear} ${this.title}. All Rights Reserved`;
-  footerRoutes: Link[] = [];
+export class FooterComponent {
+  readonly logo = APP_CONSTANTS.appLogo;
+  readonly title = APP_CONSTANTS.appTitle;
+  readonly currentYear = new Date().getFullYear();
+  readonly footerRoutes = FOOTER_ITEMS;
 
-  constructor(private bottomSheet: MatBottomSheet) {}
+  private readonly bottomSheet = inject(MatBottomSheet);
 
-  ngOnInit(): void {
-    this.footerRoutes = FooterItems.items;
-  }
-
-  openSheet(event: Event, params: any): void {
+  openSheet(event: Event, item: Link): void {
     event.preventDefault();
-    switch (params.title) {
-      case "Terms of Service":
-        this.bottomSheet.open(BottomSheetComponent, {data: {component: params.component}});
-        break;
-      case "Privacy Policy":
-        this.bottomSheet.open(BottomSheetComponent, {data: {component: params.component}});
-        break;
-      default:  // Do nothing
-        break;
-    }
+    this.bottomSheet.open(BottomSheetComponent, { data: { component: item.component } });
   }
 }
