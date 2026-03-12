@@ -1,39 +1,267 @@
-.car__view {
-  &--information {
-    @apply bg-[#787878] py-[30px] gap-[100px];
+// ─── Hero ─────────────────────────────────────────────────────────────────────
+.car-view__hero {
+  background: linear-gradient(135deg, #0D1117 0%, #1a2744 60%, #252D3D 100%);
+  padding-bottom: 24px;
+  overflow: hidden;
+}
 
-    h1 {
-      @apply text-5xl/[63px];
-    }
+.car-view__hero-inner {
+  padding: 32px 48px 0;
+
+  @media (max-width: 768px) { padding: 24px 24px 0; }
+}
+
+.car-view__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease, gap 0.2s ease;
+  padding: 8px 0;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    transition: transform 0.2s ease;
   }
 
-  &--image {
-    @apply max-h-[302px];
+  &:hover {
+    color: #fff;
+    gap: 10px;
+
+    mat-icon { transform: translateX(-3px); }
+  }
+}
+
+.car-view__hero-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 40px 0 0;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 28px 0 0;
+  }
+}
+
+.car-view__hero-text { flex: 1; }
+
+.car-view__model {
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 6px;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+.car-view__type {
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 28px;
+}
+
+.car-view__hero-price {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.car-view__price-main {
+  font-size: 40px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.025em;
+
+  .car-view__price-suffix {
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.55);
+  }
+}
+
+.car-view__spec-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.car-view__price-old {
+  font-size: 18px;
+  color: rgba(255,255,255,0.4);
+  text-decoration: line-through;
+}
+
+.car-view__hero-img-wrap {
+  flex: 0 0 auto;
+  max-width: 520px;
+  width: 100%;
+
+  @media (max-width: 768px) { max-width: 100%; }
+}
+
+.car-view__hero-img {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+  filter: drop-shadow(0 24px 60px rgba(0,0,0,0.5));
+  animation: float 4.5s ease-in-out infinite;
+}
+
+// ─── Detail card ──────────────────────────────────────────────────────────────
+.car-view__detail {
+  padding: 48px 48px 80px;
+  background: #F6F7F9;
+  min-height: 60vh;
+
+  @media (max-width: 768px) { padding: 32px 24px 64px; }
+}
+
+.car-view__card {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.07);
+  overflow: hidden;
+}
+
+// ─── Sections ─────────────────────────────────────────────────────────────────
+.car-view__section {
+  padding: 36px 40px;
+  border-bottom: 1px solid #F0F4FA;
+
+  @media (max-width: 768px) { padding: 28px 24px; }
+
+  &:last-child { border-bottom: none; }
+}
+
+.car-view__section-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1A202C;
+  margin: 0 0 16px;
+  letter-spacing: -0.01em;
+}
+
+.car-view__description {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #596780;
+  margin: 0;
+  max-width: 680px;
+}
+
+// ─── Specs grid ───────────────────────────────────────────────────────────────
+.car-view__specs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+}
+
+.car-view__spec {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #F6F7F9;
+  border-radius: 14px;
+  padding: 18px 20px;
+  transition: background 0.2s ease;
+
+  &:hover { background: #EEF2FD; }
+}
+
+.car-view__spec-icon {
+  width: 44px;
+  height: 44px;
+  background: #fff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+
+  mat-icon {
+    color: #3563E9;
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.car-view__spec-label,
+.car-view__spec-value {
+  display: block;
+}
+
+.car-view__spec-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #90A3BF;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 2px;
+}
+
+.car-view__spec-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1A202C;
+}
+
+// ─── Additional features ──────────────────────────────────────────────────────
+.car-view__extras {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #596780;
+
+    mat-icon {
+      color: #3563E9;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// ─── Empty ────────────────────────────────────────────────────────────────────
+.car-view__empty {
+  padding: 80px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #90A3BF;
   }
 
-  &--description {
-    h2 {
-      @apply text-[#1A202C];
-    }
-
-    p {
-      @apply text-[#596780];
-    }
-  }
-
-  &--description__table {
-    table {
-      @apply w-full max-w-[648px];
-
-      tr {
-        td {
-          @apply text-[#90A3BF] border-[#B4B4B4];
-
-          span {
-            @apply text-[#596780];
-          }
-        }
-      }
-    }
-  }
+  &-text { color: #596780; font-size: 16px; margin: 0; }
+  &-link { color: #3563E9; font-weight: 700; }
 }

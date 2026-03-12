@@ -1,40 +1,220 @@
-@use '@angular/material' as mat;
+// ─── Card shell ───────────────────────────────────────────────────────────────
+.car-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  outline: none;
+  border: 1.5px solid transparent;
+  transition:
+    transform  0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.28s ease,
+    border-color 0.22s ease;
 
-// Customize the entire app. Change :root to your selector if you want to scope the styles.
-:root {
-  @include mat.chips-overrides((
-    outline-color: transparent,
-    outline-width: 0px,
-    disabled-outline-color: transparent,
-  ));
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(53, 99, 233, 0.13);
+    border-color: rgba(53, 99, 233, 0.15);
+  }
+
+  &:focus-visible {
+    outline: 3px solid #3563E9;
+    outline-offset: 2px;
+  }
+
+  // Image hover zoom relayed to image child
+  &:hover .car-card__img { transform: scale(1.05); }
 }
 
-::ng-deep .mdc-evolution-chip-set__chips {
-  @apply flex justify-center items-center gap-4 !flex-nowrap !mr-0 px-7;
+// ─── Image wrap ───────────────────────────────────────────────────────────────
+.car-card__img-wrap {
+  position: relative;
+  background: #F6F7F9;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
 }
 
-::ng-deep .mdc-evolution-chip-set__chips {
-  .mdc-evolution-chip__action {
-    &::before {
-      border: none !important;
-    }
+.car-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  padding: 16px;
+  transition: transform 0.42s ease;
+}
 
-    .mdc-evolution-chip__text-label {
-      @apply flex items-center gap-1 !text-[#90A3BF];
-    }
+// ─── Discount badge ───────────────────────────────────────────────────────────
+.car-card__discount-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #3563E9;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+// ─── Favourite button ─────────────────────────────────────────────────────────
+.car-card__fav {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(6px);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.18s ease;
+  padding: 0;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #90A3BF;
+    transition: color 0.18s ease;
+  }
+
+  &[aria-pressed='true'] mat-icon { color: #ef4444; }
+
+  &:hover {
+    transform: scale(1.18);
+    background: #fff;
+
+    mat-icon { color: #ef4444; }
   }
 }
 
-::ng-deep mat-card {
-  mat-card-content {
-    img {
-      @apply lg:h-[140px] w-auto h-auto max-h-[140px] mx-auto;
-    }
-  }
+// ─── Body ─────────────────────────────────────────────────────────────────────
+.car-card__body {
+  padding: 16px 20px 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-  mat-card-actions {
-    button {
-      @apply py-2.5 !bg-[#3563E9] !px-[22px];
-    }
+.car-card__meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.car-card__model {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: #1A202C;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.car-card__type {
+  font-size: 11px;
+  font-weight: 700;
+  color: #90A3BF;
+  background: #F6F7F9;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+// ─── Specs ────────────────────────────────────────────────────────────────────
+.car-card__specs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.car-card__spec-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #90A3BF;
+
+  mat-icon {
+    font-size: 15px;
+    width: 15px;
+    height: 15px;
+  }
+}
+
+// ─── Footer / Price ───────────────────────────────────────────────────────────
+.car-card__footer {
+  padding: 14px 20px 18px;
+  border-top: 1px solid #F0F4FA;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.car-card__price {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.car-card__price-main {
+  font-size: 20px;
+  font-weight: 900;
+  color: #1A202C;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+
+  .car-card__price-suffix {
+    font-size: 12px;
+    font-weight: 500;
+    color: #90A3BF;
+    letter-spacing: 0;
+  }
+}
+
+.car-card__price-old {
+  font-size: 12px;
+  color: #90A3BF;
+  text-decoration: line-through;
+  font-weight: 500;
+}
+
+// ─── Rent Now button ──────────────────────────────────────────────────────────
+.car-card__btn {
+  background: #3563E9 !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  padding: 9px 18px !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  height: auto !important;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease !important;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &:hover {
+    background: #2851C9 !important;
+    box-shadow: 0 6px 20px rgba(53, 99, 233, 0.42) !important;
+    transform: translateY(-1px);
   }
 }

@@ -1,33 +1,37 @@
-import { Component, OnInit } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterModule, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../../services/auth/auth.service';
-import { Router } from '@angular/router';
+import { TranslatePipe } from '../../../common/pipes/translate.pipe';
 
 @Component({
   selector: 'app-menu',
-  imports: [MatMenuModule, MatButtonModule, MatIconModule],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterModule, MatButtonModule, MatIconModule, TranslatePipe],
   templateUrl: './menu.component.html',
-  styleUrl: './menu.component.scss'
+  styleUrl: './menu.component.scss',
 })
-export class MenuComponent implements OnInit {
-  isLoggedIn: boolean = false;
+export class MenuComponent {
+  readonly isLoggedIn = signal(false);
 
-  constructor(private authService: AuthService, private router: Router) {}
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
-  ngOnInit(): void {
-    this.authService.getUser().subscribe(userResponse => {
-      this.isLoggedIn = !!userResponse?.data?.user; // ✅ Check if user is logged in
-    });
+  constructor() {
+    this.authService.getUser()
+      .pipe(takeUntilDestroyed())
+      .subscribe(userResponse => {
+        this.isLoggedIn.set(!!userResponse?.data?.user);
+      });
   }
 
   logOut(): void {
-    this.authService.logOut().subscribe(() => {
-      // Delay navigation slightly to ensure state update
-      setTimeout(() => {
-        this.router.navigateByUrl('/login');
-      }, 100);
-    });
+    this.authService.logOut()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.router.navigateByUrl('/login'));
   }
 }

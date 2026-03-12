@@ -1,3 +1,125 @@
-p {
-  color: #131313;
+// ─── Footer shell ─────────────────────────────────────────────────────────────
+.site-footer {
+  background: #0D1117;
+  color: rgba(255,255,255,0.65);
+}
+
+.site-footer__inner {
+  padding: 72px 48px 40px;
+
+  @media (max-width: 768px) { padding: 48px 24px 32px; }
+}
+
+// ─── Top row ──────────────────────────────────────────────────────────────────
+.site-footer__top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+
+  @media (max-width: 1024px) { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 560px)  { grid-template-columns: 1fr; gap: 32px; }
+}
+
+// ─── Brand block ──────────────────────────────────────────────────────────────
+.site-footer__logo {
+  display: block;
+  margin-bottom: 20px;
+  filter: brightness(0) invert(1) opacity(0.9);
+}
+
+.site-footer__tagline {
+  font-size: 14px;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.45);
+  max-width: 260px;
+  margin: 0 0 24px;
+}
+
+.site-footer__socials {
+  display: flex;
+  gap: 12px;
+}
+
+.site-footer__social {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    background: #3563E9;
+    color: #fff;
+    border-color: #3563E9;
+    transform: translateY(-2px);
+  }
+}
+
+// ─── Nav groups ───────────────────────────────────────────────────────────────
+.site-footer__nav-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 20px;
+}
+
+.site-footer__nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.site-footer__nav-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  transition: color 0.18s ease;
+
+  &:hover { color: #fff; }
+}
+
+// ─── Divider ──────────────────────────────────────────────────────────────────
+.site-footer__divider {
+  border: none;
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 48px 0 28px;
+}
+
+// ─── Bottom row ───────────────────────────────────────────────────────────────
+.site-footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.site-footer__copyright,
+.site-footer__made {
+  font-size: 13px;
+  color: rgba(255,255,255,0.35);
+  margin: 0;
+}
+
+.site-footer__made-heart {
+  color: #ef4444;
 }

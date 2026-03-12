@@ -1,49 +1,57 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../../services/auth/auth.service';
+import { Router, RouterLink } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../../../services/auth/auth.service';
+import { FormErrorPipe } from '../../../common/pipes/form-error.pipe';
+import { APP_CONSTANTS } from '../../../common/global-constants';
+import { SlotTextDirective } from '../../../common/directives/slot-text.directive';
+import { TranslatePipe } from '../../../common/pipes/translate.pipe';
+import { TranslationService } from '../../../services/translation/translation.service';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterModule, MatInputModule, MatButtonModule],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ReactiveFormsModule, RouterLink, MatInputModule, MatButtonModule, MatIconModule, FormErrorPipe, SlotTextDirective, TranslatePipe],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  fb = inject(FormBuilder);
-  http = inject(HttpClient);
-  router = inject(Router);
-  authService = inject(AuthService);
-  private _snackBar = inject(MatSnackBar);
+  readonly logo = APP_CONSTANTS.appLogo;
+  readonly ts = inject(TranslationService);
 
-  logInform = this.fb.nonNullable.group({
-    email: ['', Validators.required],
-    password: ['', Validators.required],
+  private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly destroyRef = inject(DestroyRef);
+
+  readonly loginForm = this.fb.nonNullable.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
   });
-  errorMessage: string | null = null;
 
   onSubmit(): void {
-    const rawForm = this.logInform.getRawValue();
-    this.authService.logIn(
-      rawForm.email,
-      rawForm.password,
-    ).subscribe(result => {
-      if (result.error) {
-        console.log('err');
-        this._snackBar.open(result.error.message, 'Close', {
-          horizontalPosition: 'center',
-          verticalPosition: 'top',
-          panelClass: ['!text-red-700']
-        });
-        this.errorMessage = result.error.message;
-      } else {
-        this.router.navigateByUrl('/');
-      }
-    })
+    if (this.loginForm.invalid) return;
+    const { email, password } = this.loginForm.getRawValue();
+
+    this.authService.logIn(email, password)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(result => {
+        if (result.error) {
+          this.snackBar.open(result.error.message, 'Close', {
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['snack-error'],
+          });
+        } else {
+          this.router.navigateByUrl('/');
+        }
+      });
   }
 }

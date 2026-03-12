@@ -1,30 +1,191 @@
-/* You can add global styles to this file, and also import other style files */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root{
-  --button-color: #3563E9;
-  --container-width: 1664px;
+// ─── Design tokens ────────────────────────────────────────────────────────────
+:root {
+  --primary:        #3563E9;
+  --primary-light:  #EEF2FD;
+  --primary-dark:   #2851C9;
+  --dark:           #0D1117;
+  --dark-100:       #1A202C;
+  --dark-200:       #252D3D;
+  --surface:        #F6F7F9;
+  --text-primary:   #1A202C;
+  --text-secondary: #596780;
+  --text-muted:     #90A3BF;
+  --border:         rgba(195, 212, 233, 0.4);
+  --radius-card:    20px;
+  --shadow-card:    0 2px 16px rgba(0,0,0,0.06);
+  --shadow-hover:   0 20px 60px rgba(53,99,233,0.13);
+  --transition:     0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --container-width: 1440px;
 }
 
-@font-face {
-  font-family: 'Lato';
-  src: url('assets/fonts/Lato/Lato-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
+// ─── Font faces ───────────────────────────────────────────────────────────────
+@font-face { font-family: 'Lato'; src: url('assets/fonts/Lato/Lato-Thin.ttf')        format('truetype'); font-weight: 100; font-style: normal;  font-display: swap; }
+@font-face { font-family: 'Lato'; src: url('assets/fonts/Lato/Lato-ThinItalic.ttf')  format('truetype'); font-weight: 100; font-style: italic;  font-display: swap; }
+@font-face { font-family: 'Lato'; src: url('assets/fonts/Lato/Lato-Light.ttf')       format('truetype'); font-weight: 300; font-style: normal;  font-display: swap; }
+@font-face { font-family: 'Lato'; src: url('assets/fonts/Lato/Lato-LightItalic.ttf') format('truetype'); font-weight: 300; font-style: italic;  font-display: swap; }
+@font-face { font-family: 'Lato'; src: url('assets/fonts/Lato/Lato-Regular.ttf')     format('truetype'); font-weight: 400; font-style: normal;  font-display: swap; }
+@font-face { font-family: 'Lato'; src: url('assets/fonts/Lato/Lato-Italic.ttf')      format('truetype'); font-weight: 400; font-style: italic;  font-display: swap; }
+@font-face { font-family: 'Lato'; src: url('assets/fonts/Lato/Lato-Bold.ttf')        format('truetype'); font-weight: 700; font-style: normal;  font-display: swap; }
+@font-face { font-family: 'Lato'; src: url('assets/fonts/Lato/Lato-BoldItalic.ttf')  format('truetype'); font-weight: 700; font-style: italic;  font-display: swap; }
+@font-face { font-family: 'Lato'; src: url('assets/fonts/Lato/Lato-Black.ttf')       format('truetype'); font-weight: 900; font-style: normal;  font-display: swap; }
+@font-face { font-family: 'Lato'; src: url('assets/fonts/Lato/Lato-BlackItalic.ttf') format('truetype'); font-weight: 900; font-style: italic;  font-display: swap; }
 
-.container {
-  max-width: var(--container-width);
-}
+// ─── Base ─────────────────────────────────────────────────────────────────────
+*, *::before, *::after { box-sizing: border-box; }
 
-html, body {
-  height: 100%;
-}
+input::placeholder { opacity: 0.5; }
+
+html, body { height: 100%; }
 
 body {
   margin: 0;
-  font-family: "Lato", sans-serif;
-  color: #596780;
+  font-family: 'Lato', sans-serif;
+  color: var(--text-secondary);
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+.container { max-width: var(--container-width); }
+
+// ─── Global keyframe animations ───────────────────────────────────────────────
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(36px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(-36px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+@keyframes pulseDot {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%      { opacity: 0.6; transform: scale(0.75); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+@keyframes cardReveal {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Animation utility classes (set opacity:0 so delay works correctly) ───────
+.anim-up   { opacity: 0; animation: fadeUp 0.7s ease forwards; }
+.anim-up-1 { opacity: 0; animation: fadeUp 0.7s ease 0.10s forwards; }
+.anim-up-2 { opacity: 0; animation: fadeUp 0.7s ease 0.22s forwards; }
+.anim-up-3 { opacity: 0; animation: fadeUp 0.7s ease 0.34s forwards; }
+.anim-up-4 { opacity: 0; animation: fadeUp 0.7s ease 0.48s forwards; }
+.anim-up-5 { opacity: 0; animation: fadeUp 0.7s ease 0.62s forwards; }
+.anim-left { opacity: 0; animation: slideLeft 0.7s ease forwards; }
+.anim-fade { opacity: 0; animation: fadeIn 0.5s ease forwards; }
+
+// ─── Scroll-driven reveal (modern CSS — fallback graceful) ────────────────────
+@supports (animation-timeline: view()) {
+  .scroll-reveal {
+    animation: cardReveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 28%;
+  }
+  .scroll-reveal-late {
+    animation: cardReveal linear both;
+    animation-timeline: view();
+    animation-range: entry 5% cover 35%;
+  }
+}
+@supports not (animation-timeline: view()) {
+  .scroll-reveal,
+  .scroll-reveal-late { animation: cardReveal 0.6s ease forwards; }
+}
+
+// ─── Shared card surface ──────────────────────────────────────────────────────
+.cf-card {
+  background: #fff;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.32s cubic-bezier(0.34,1.56,0.64,1),
+              box-shadow var(--transition);
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+  }
+}
+
+// ─── Primary button ───────────────────────────────────────────────────────────
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--primary) !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  padding: 13px 28px !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  height: auto !important;
+  box-shadow: 0 4px 20px rgba(53,99,233,0.32) !important;
+  transition: all 0.22s ease !important;
+  letter-spacing: 0.01em;
+
+  &:hover:not(:disabled) {
+    background: var(--primary-dark) !important;
+    box-shadow: 0 8px 32px rgba(53,99,233,0.52) !important;
+    transform: translateY(-2px);
+  }
+  &:disabled { opacity: 0.55 !important; }
+}
+
+// ─── Angular Material global overrides ────────────────────────────────────────
+.mdc-evolution-chip__action::before { border: none !important; }
+.mdc-evolution-chip__text-label {
+  display: flex; align-items: center; gap: 4px; color: #90a3bf;
+}
+
+// Search field pill shape
+.search .mdc-text-field--outlined {
+  --mdc-outlined-text-field-container-shape: 70px;
+}
+
+// Mat form-field outline global radius
+.mat-mdc-form-field .mdc-text-field--outlined {
+  --mdc-outlined-text-field-container-shape: 12px;
+}
+
+// Remove the inner borders that draw a line through the label/placeholder
+.mat-mdc-notch-piece.mdc-notched-outline__notch    { border-right: none; }
+.mat-mdc-notch-piece.mdc-notched-outline__trailing { border-left: none; }
+
+// ─── Slot text animation (used via SlotTextDirective) ─────────────────────────
+@keyframes slotDrop {
+  0%   { transform: translateY(-140%); opacity: 0; }
+  40%  { transform: translateY(12%);   opacity: 1; }
+  60%  { transform: translateY(-6%);   opacity: 1; }
+  80%  { transform: translateY(3%);    opacity: 1; }
+  100% { transform: translateY(0);     opacity: 1; }
+}
+
+.slot-letter {
+  display: inline-block;
+  white-space: pre;
+  opacity: 0;
+  animation: slotDrop 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+// ─── Snackbar ─────────────────────────────────────────────────────────────────
+.snack-error .mdc-snackbar__label { color: #b91c1c; }

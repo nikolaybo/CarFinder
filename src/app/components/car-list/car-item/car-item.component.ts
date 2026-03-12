@@ -1,51 +1,36 @@
-import { Component, Input, Signal, signal } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatIconModule } from '@angular/material/icon';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { DecimalPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { CarService } from '../../../services/car/car.service';
-import { Car } from '../../../interfaces/car-interface';
-import { DatabaseService } from '../../../services/database/database.service';
-import { AuthService } from '../../../services/auth/auth.service';
-
+import { FavoritesService } from '../../../services/favorites/favorites.service';
+import type { Car } from '../../../interfaces/car-interface';
+import { TranslatePipe } from '../../../common/pipes/translate.pipe';
 
 @Component({
   selector: 'app-car-item',
   standalone: true,
-  imports: [MatCardModule, MatChipsModule, MatIconModule, MatButtonModule, DecimalPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatButtonModule, MatIconModule, DecimalPipe, TranslatePipe],
   templateUrl: './car-item.component.html',
-  styleUrl: './car-item.component.scss'
+  styleUrl: './car-item.component.scss',
 })
 export class CarItemComponent {
-  @Input() car!: Car;
-  @Input() showFavoriteButton: boolean = true;
-  userId: string | undefined = '';
-  isFavorite = signal(false);
+  readonly car = input.required<Car>();
+  readonly showFavoriteButton = input(true);
+  readonly isFavorite = computed(() => this.favoritesService.isFavorite(this.car().id));
 
-  constructor(private router: Router, private carService: CarService, private dbService: DatabaseService, private authService: AuthService) {}
-
-  async ngOnInit() {
-    this.authService.getUser().subscribe(userResponse => {
-      this.userId = userResponse?.data?.user?.id;
-    });
-    const favoriteCarIds = await this.dbService.getUserFavorites(this.userId);
-    this.isFavorite.set(favoriteCarIds.includes(this.car.id));
-  }
+  private readonly router = inject(Router);
+  private readonly carService = inject(CarService);
+  private readonly favoritesService = inject(FavoritesService);
 
   goToCarView(): void {
-    this.carService.setCar(this.car);
-    this.router.navigate(['/car-view', this.car.id]);
+    this.carService.setCar(this.car());
+    this.router.navigate(['/car-view', this.car().id]);
   }
 
-  async toggleFavorite() {
-    if (this.isFavorite()) {
-      await this.dbService.removeFavorite(this.userId, this.car.id);
-      this.isFavorite.set(false);
-    } else {
-      await this.dbService.addFavorite(this.userId, this.car.id);
-      this.isFavorite.set(true);
-    }
+  toggleFavorite(): void {
+    this.favoritesService.toggle(this.car().id);
   }
 }

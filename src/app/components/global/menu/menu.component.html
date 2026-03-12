@@ -1,20 +1,25 @@
-<nav aria-label="Main menu">
-  <ul class="flex flex-row items-center gap-2">
-    @if (!isLoggedIn) {
-      <li>
-        <button mat-icon-button aria-label="Log In" class="!inline-flex !w-auto">
-          <a href="/login" class="z-10 text-base -tracking-widest text-center text-gray-600">Log In</a>
-        </button>
+<nav class="site-nav" aria-label="Main navigation">
+  <ul class="site-nav__list">
+    @if (!isLoggedIn()) {
+      <li class="site-nav__item">
+        <a class="site-nav__link" mat-button [routerLink]="['/login']">{{ 'nav.login' | translate }}</a>
+      </li>
+      <li class="site-nav__item">
+        <a class="site-nav__btn btn-primary" mat-flat-button [routerLink]="['/register']">
+          {{ 'nav.register' | translate }}
+        </a>
       </li>
     } @else {
-      <li>
-        <button mat-icon-button aria-label="Favorite cars" class="!inline-flex !w-auto">
-          <a class="text-base z-10 -tracking-widest text-center text-gray-600" href="/profile">Favorite</a>
-        </button>
+      <li class="site-nav__item">
+        <a class="site-nav__link" mat-button [routerLink]="['/profile']">
+          <mat-icon>favorite_border</mat-icon>
+          {{ 'nav.favorites' | translate }}
+        </a>
       </li>
-      <li>
-        <button mat-icon-button aria-label="Log out" (click)="logOut()" class="!inline-flex !w-auto">
-          <a class="text-base -tracking-widest text-center text-gray-600">Log Out</a>
+      <li class="site-nav__item">
+        <button class="site-nav__logout" mat-button (click)="logOut()">
+          <mat-icon>logout</mat-icon>
+          {{ 'nav.logout' | translate }}
         </button>
       </li>
     }

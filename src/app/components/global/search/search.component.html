@@ -1,28 +1,43 @@
-<div class="header__search relative">
-  <form class="header__search--form">
+<div class="search" role="search">
+  <form class="search__form" (submit)="$event.preventDefault()">
     <mat-form-field appearance="outline" subscriptSizing="dynamic" class="rounded-full">
-      <mat-icon matPrefix>search</mat-icon>
+      <mat-icon matPrefix aria-hidden="true">search</mat-icon>
       <input
         matInput
-        type="text"
-        [(ngModel)]="searchTerm"
+        class="search__input"
+        type="search"
+        [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)"
         (input)="onSearch()"
-        placeholder="Search for your car..."
-        [ngModelOptions]="{standalone: true}">
+        [placeholder]="ts.t('placeholder.search')"
+        [ngModelOptions]="{standalone: true}"
+        aria-label="Search for a car"
+        aria-autocomplete="list"
+        [attr.aria-expanded]="searchResults().length > 0"
+        aria-controls="search-results-list"
+      >
     </mat-form-field>
   </form>
 
-  <!-- Search Results Dropdown -->
-   @if(searchResults.length > 0) {
-    <div class="search-results mt-1 shadow-md">
-      <ul>
-        @for(car of searchResults; track car) {
-          <li (click)="goToCarView(car)" class="flex flex-row items-center gap-4 border-b-1 border-solid border-gray-200">
-            <img [src]="car.image" [alt]="car.model" class="car-image">
-            <span>{{ car.model }} - {{ car.type }} - ${{ (car.discounted_price ? car.discounted_price : car.price) | number: '1.2-2' }} / day</span>
+  @if (searchResults().length > 0) {
+    <div
+      class="search__results"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      <ul id="search-results-list" class="search__results-list" role="listbox" aria-label="Search results">
+        @for (car of searchResults(); track car.id) {
+          <li class="search__result-item" role="option">
+            <button
+              type="button"
+              class="search__result-btn"
+              (click)="goToCarView(car)"
+            >
+              <img class="search__result-img" [src]="car.image" [alt]="car.model" loading="lazy">
+              <span class="search__result-label">{{ car.model }} — {{ car.type }} — ${{ (car.discounted_price || car.price) | number: '1.2-2' }} / day</span>
+            </button>
           </li>
         }
       </ul>
     </div>
-   }
+  }
 </div>

@@ -1,26 +1,60 @@
-<div class="container pt-4 mx-auto py-16 px-8 flex flex-col">
-  <div class="flex md:flex-row flex-col justify-between items-center border-b border-solid border-gray-200 pb-16">
-    <div class="max-w-72 flex flex-col gap-4">
-      <img [src]="logo" width="148" height="44" alt="Logo" priority>
-      <p class="text-base font-medium">Our vision is to provide convenience and help increase your sales business.</p>
-    </div>
-    <div class="max-w-72 md:w-auto w-full flex flex-col">
-      <h5 class="font-semibold text-xl text-gray-800 my-4">About</h5>
-      <ul class="flex flex-col gap-4">
-        <li>How it Works?</li>
-        <li>Created By</li>
-      </ul>
-    </div>
-  </div>
+<footer class="site-footer">
+  <div class="site-footer__inner container mx-auto">
 
-  <div class="flex md:flex-row flex-col justify-between md:gap-0 gap-8 items-center pt-16">
-    <p class="font-semibold">{{ copyrightText }}</p>
-    <ul class="flex flex-row gap-5">
-      @for (nav of footerRoutes; track nav) {
-        <li class="text-right">
-          <a href="#" (click)="openSheet($event, nav)" class="text-base font-semibold">{{ nav.title }}</a>
-        </li>
-      }
-    </ul>
+    <!-- Top row -->
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <img class="site-footer__logo" [src]="logo" width="140" height="42" alt="Car Finder logo">
+        <p class="site-footer__tagline">
+          {{ 'footer.tagline' | translate }}
+        </p>
+        <div class="site-footer__socials" aria-label="Social media links">
+          <a class="site-footer__social" href="#" aria-label="Twitter / X"><mat-icon>alternate_email</mat-icon></a>
+          <a class="site-footer__social" href="#" aria-label="Instagram"><mat-icon>photo_camera</mat-icon></a>
+          <a class="site-footer__social" href="#" aria-label="LinkedIn"><mat-icon>work_outline</mat-icon></a>
+        </div>
+      </div>
+
+      <div class="site-footer__nav-group">
+        <h3 class="site-footer__nav-title">{{ 'footer.product' | translate }}</h3>
+        <ul class="site-footer__nav">
+          <li class="site-footer__nav-item"><a class="site-footer__nav-link" [routerLink]="['/']">{{ 'footer.browse' | translate }}</a></li>
+          <li class="site-footer__nav-item"><a class="site-footer__nav-link" [routerLink]="['/profile']">{{ 'footer.favorites' | translate }}</a></li>
+        </ul>
+      </div>
+
+      <div class="site-footer__nav-group">
+        <h3 class="site-footer__nav-title">{{ 'footer.company' | translate }}</h3>
+        <ul class="site-footer__nav">
+          <li class="site-footer__nav-item"><a class="site-footer__nav-link" href="#">{{ 'footer.how' | translate }}</a></li>
+          <li class="site-footer__nav-item"><a class="site-footer__nav-link" href="#">{{ 'footer.about' | translate }}</a></li>
+        </ul>
+      </div>
+
+      <div class="site-footer__nav-group">
+        <h3 class="site-footer__nav-title">{{ 'footer.legal' | translate }}</h3>
+        <ul class="site-footer__nav" aria-label="Legal links">
+          @for (nav of footerRoutes; track nav.title) {
+            <li class="site-footer__nav-item">
+              <a class="site-footer__nav-link" href="#" (click)="openSheet($event, nav)">{{ nav.title | translate }}</a>
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="site-footer__divider" role="separator"></div>
+
+    <!-- Bottom row -->
+    <div class="site-footer__bottom">
+      <p class="site-footer__copyright">© {{ currentYear }} {{ title }}. {{ 'footer.rights' | translate }}</p>
+      <p class="site-footer__made">
+        <span class="site-footer__made-text">{{ 'footer.crafted' | translate }}</span>
+        <span class="site-footer__made-heart" aria-label="love">♥</span>
+        <span class="site-footer__made-text">{{ 'footer.enthusiasts' | translate }}</span>
+      </p>
+    </div>
+
   </div>
-</div>
+</footer>

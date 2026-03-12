@@ -1,29 +1,198 @@
-.homepage {
-  &__heroimage {
-    background-image: url("/assets/images/hero_image.png");
+// ─── Hero ─────────────────────────────────────────────────────────────────────
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 620px;
+
+  background-image: url('/assets/images/hero_image.png');
+  background-size: cover;
+  background-position: center;
+
+  @media (max-width: 768px) {
+    background-image: url('/assets/images/hero_image_small.png');
+    min-height: 520px;
+  }
+
+  // Dark gradient overlay
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(13, 17, 23, 0.88) 0%,
+      rgba(53, 99, 233, 0.42) 55%,
+      rgba(13, 17, 23, 0.18) 100%
+    );
+    z-index: 0;
+  }
+
+  &__body {
+    position: relative;
+    z-index: 1;
+    padding: 80px 48px 48px;
 
     @media (max-width: 768px) {
-      background-image: url("/assets/images/hero_image_small.png");
+      padding: 56px 24px 36px;
     }
+  }
 
-    @apply bg-cover bg-center h-[505px] px-[35px] py-[100px];
+  &__text {
+    max-width: 540px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
 
-    &--content {
-      @apply max-w-[396px];
+  // ── Badge ──
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 100px;
+    width: fit-content;
+    letter-spacing: 0.02em;
+  }
 
-      h1 {
-        @apply tracking-tight;
-      }
+  &__badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4ade80;
+    flex-shrink: 0;
+    animation: pulseDot 2s ease infinite;
+  }
 
-      p {
-        @apply tracking-tight max-w-[284px];
-      }
+  // ── Title ──
+  &__title {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+    font-size: clamp(44px, 6vw, 72px);
+    font-weight: 900;
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    color: #fff;
+  }
+
+  &__title-line {
+    display: block;
+
+    &--accent { color: #6b96ff; }
+  }
+
+  // ── Subtitle ──
+  &__subtitle {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.72);
+    max-width: 400px;
+  }
+
+  // ── CTA ──
+  &__actions { display: flex; gap: 16px; }
+
+  &__cta {
+    height: auto !important;
+    mat-icon { transition: transform 0.22s ease; }
+    &:hover mat-icon { transform: translateX(5px); }
+  }
+
+  // ── Stats bar ──
+  &__stats {
+    position: relative;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(14px);
+  }
+
+  &__stats-inner {
+    display: flex;
+    align-items: center;
+    padding: 24px 48px;
+
+    @media (max-width: 768px) {
+      padding: 20px 24px;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
+  }
 
-    button {
-      background-color: var(--button-color);
+  &__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 40px;
 
-      @apply h-14 w-[154px];
-    }
+    &:first-child { padding-left: 0; }
+
+    @media (max-width: 768px) { padding: 0 16px; }
+  }
+
+  &__stat-number {
+    font-size: 28px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  &__stat-plus {
+    font-size: 20px;
+    margin-left: 1px;
+  }
+
+  &__stat-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  &__stat-divider {
+    width: 1px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.18);
+    flex-shrink: 0;
+
+    @media (max-width: 768px) { display: none; }
+  }
+}
+
+// ─── Listing section ──────────────────────────────────────────────────────────
+.listing-section {
+  background: #F6F7F9;
+
+  &__head {
+    padding: 60px 48px 0;
+
+    @media (max-width: 768px) { padding: 44px 24px 0; }
+  }
+
+  &__title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #1A202C;
+    margin: 0 0 4px;
+    letter-spacing: -0.015em;
+  }
+
+  &__sub {
+    font-size: 15px;
+    color: #90A3BF;
+    margin: 0;
   }
 }

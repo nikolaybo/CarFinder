@@ -1,49 +1,70 @@
-<mat-card appearance="outlined" class="flex flex-col gap-7 bg-transparent border-none">
-  <mat-card-header class="pt-6">
-    <mat-card-title-group>
-      <mat-card-title class="font-bold text-xl text-black">{{ car.model }}</mat-card-title>
-      <mat-card-subtitle class="font-bold text-sm">{{ car.type }}</mat-card-subtitle>
-    </mat-card-title-group>
-    @if(showFavoriteButton) {
-      <button mat-icon-button aria-label="Add to favorite" class="text-3xl" (click)="toggleFavorite()">
-        <mat-icon>{{ isFavorite() ? 'favorite' : 'favorite_outline' }}</mat-icon>
+<article class="car-card scroll-reveal" (click)="goToCarView()" role="button" tabindex="0" [attr.aria-label]="'View details for ' + car().model" (keydown.enter)="goToCarView()">
+
+  <!-- Image -->
+  <div class="car-card__img-wrap">
+    <img
+      class="car-card__img"
+      [src]="car().image"
+      [alt]="car().model + ' — car image'"
+      loading="lazy"
+    />
+
+    @if (car().discounted_price) {
+      <span class="car-card__discount-badge"
+            aria-label="Discounted price available">
+        {{ ((car().price - car().discounted_price) / car().price * 100) | number:'1.0-0' }}% OFF
+      </span>
+    }
+
+    @if (showFavoriteButton()) {
+      <button
+        class="car-card__fav"
+        [attr.aria-label]="isFavorite() ? 'Remove from favorites' : 'Add to favorites'"
+        [attr.aria-pressed]="isFavorite()"
+        (click)="toggleFavorite(); $event.stopPropagation()"
+      >
+        <mat-icon>{{ isFavorite() ? 'favorite' : 'favorite_border' }}</mat-icon>
       </button>
     }
-  </mat-card-header>
-  <mat-card-content>
-    <img mat-card-image class="lg:w-full" src="{{ car.image }}" alt="{{ car.model }}"/>
-  </mat-card-content>
-  <mat-card-footer class="px-4">
-    <mat-chip-set aria-label="Car details" role="list">
-      <mat-chip role="listitem">
-        <mat-icon aria-hidden="false" aria-label="Fuel Consumption">local_gas_station</mat-icon>
-        {{ car.fuel_consumption }} L
-      </mat-chip>
-      <mat-chip role="listitem">
-        <mat-icon aria-hidden="false" aria-label="Car gears">car_repair</mat-icon>
-        {{ car.gearbox }}
-      </mat-chip>
-      <mat-chip role="listitem">
-        <mat-icon aria-hidden="false" aria-label="Car seats">people_alt</mat-icon>
-        {{ car.seats }} People
-      </mat-chip>
-    </mat-chip-set>
-  </mat-card-footer>
-  <mat-card-actions class="!px-4 felx flex-row justify-between pb-6">
-    <div class="flex flex-col">
-      @if (car.discounted_price) {
-        <p class="mb-0">
-          <span class="text-black font-bold text-xl">
-            ${{ car.discounted_price | number: '1.2' }}/
-          </span>
-          <small>day</small>
-        </p>
-      }
-      <p class="mb-0 font-bold text-xl text-[#90A3BF]"
-        [class.line-through]="car.discounted_price">
-          ${{ car.price | number: '1.2' }}
-      </p>
+  </div>
+
+  <!-- Content -->
+  <div class="car-card__body">
+    <div class="car-card__meta">
+      <h3 class="car-card__model">{{ car().model }}</h3>
+      <span class="car-card__type">{{ car().type }}</span>
     </div>
-    <button class="!rounded" mat-flat-button extended (click)="goToCarView()">Rent Now</button>
-  </mat-card-actions>
-</mat-card>
+
+    <ul class="car-card__specs" aria-label="Car specifications">
+      <li class="car-card__spec-item">
+        <mat-icon aria-hidden="true">local_gas_station</mat-icon>
+        <span class="car-card__spec-text">{{ car().fuel_consumption }}L</span>
+      </li>
+      <li class="car-card__spec-item">
+        <mat-icon aria-hidden="true">settings</mat-icon>
+        <span class="car-card__spec-text">{{ car().gearbox }}</span>
+      </li>
+      <li class="car-card__spec-item">
+        <mat-icon aria-hidden="true">people_alt</mat-icon>
+        <span class="car-card__spec-text">{{ car().seats }} {{ 'car.seats' | translate }}</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <div class="car-card__footer">
+    <div class="car-card__price">
+      @if (car().discounted_price) {
+        <span class="car-card__price-main">${{ car().discounted_price | number:'1.2-2' }}<small class="car-card__price-suffix">/day</small></span>
+        <span class="car-card__price-old">${{ car().price | number:'1.2-2' }}</span>
+      } @else {
+        <span class="car-card__price-main">${{ car().price | number:'1.2-2' }}<small class="car-card__price-suffix">/day</small></span>
+      }
+    </div>
+    <button class="car-card__btn" mat-flat-button (click)="goToCarView(); $event.stopPropagation()"
+            aria-label="Rent this car">
+      {{ 'car.rent' | translate }}
+    </button>
+  </div>
+
+</article>

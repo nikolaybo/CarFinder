@@ -1,7 +1,19 @@
-<div class="container pb-4 flex md:justify-between justify-center md:gap-0 gap-5 md:flex-row flex-col content-center items-center header__container mx-auto border-b border-solid flex-wrap">
-  <a href="/">
-    <img [src]="logo" width="148" height="44" alt="Logo" priority>
-  </a>
-  <app-search></app-search>
-  <app-menu class="flex gap-4"></app-menu>
-</div>
+<header class="site-header" role="banner">
+  <div class="site-header__inner container mx-auto">
+    <a [routerLink]="['/']" class="site-header__logo"
+       aria-label="Car Finder — Go to homepage">
+      <img class="site-header__logo-img" [src]="logo" width="148" height="44"
+           alt="Car Finder logo" fetchpriority="high">
+    </a>
+
+    <div class="site-header__search">
+      <app-search></app-search>
+    </div>
+
+    <app-menu></app-menu>
+
+    <button class="site-header__lang-switch" (click)="toggleLocale()" [attr.aria-label]="'Switch language to ' + ('lang.switch' | translate)">
+      {{ 'lang.switch' | translate }}
+    </button>
+  </div>
+</header>

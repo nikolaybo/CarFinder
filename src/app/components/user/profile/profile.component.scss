@@ -1,9 +1,154 @@
-.favorites {
-  &::ng-deep {
-    app-car-item {
-      mat-card {
-        @apply bg-transparent border-none h-full justify-evenly;
-      }
-    }
+// ─── Hero ─────────────────────────────────────────────────────────────────────
+.profile-hero {
+  background: linear-gradient(135deg, #0D1117 0%, #1a2744 60%, #252D3D 100%);
+  padding: 48px 48px 40px;
+
+  @media (max-width: 768px) { padding: 32px 24px 28px; }
+}
+
+.profile-hero__inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.profile-hero__avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(53,99,233,0.25);
+  border: 2px solid rgba(53,99,233,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon {
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    color: #fff;
+  }
+}
+
+.profile-hero__title {
+  font-size: clamp(26px, 3.5vw, 40px);
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 4px;
+  letter-spacing: -0.025em;
+}
+
+.profile-hero__sub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  margin: 0;
+  font-weight: 600;
+}
+
+// ─── Content area ─────────────────────────────────────────────────────────────
+.profile-content {
+  padding: 48px 48px 80px;
+  background: #F6F7F9;
+  min-height: 60vh;
+
+  @media (max-width: 768px) { padding: 32px 24px 64px; }
+}
+
+// ─── Grid ─────────────────────────────────────────────────────────────────────
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+
+  @media (max-width: 1280px) { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 900px)  { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 560px)  { grid-template-columns: 1fr; }
+}
+
+// ─── Skeleton loader ──────────────────────────────────────────────────────────
+.profile-skeleton {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+
+  @media (max-width: 1280px) { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 900px)  { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 560px)  { grid-template-columns: 1fr; }
+}
+
+.profile-skeleton__card {
+  height: 320px;
+  border-radius: 20px;
+  background: linear-gradient(90deg, #e8edf5 25%, #f4f6fb 50%, #e8edf5 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+// ─── Empty state ──────────────────────────────────────────────────────────────
+.profile-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 80px 24px;
+  gap: 16px;
+}
+
+.profile-empty__icon {
+  width: 96px;
+  height: 96px;
+  background: rgba(53,99,233,0.08);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #3563E9;
+  }
+}
+
+.profile-empty__title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1A202C;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.profile-empty__desc {
+  font-size: 15px;
+  color: #596780;
+  margin: 0;
+  max-width: 340px;
+  line-height: 1.7;
+}
+
+.profile-empty__btn {
+  background: #3563E9 !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+  height: 48px !important;
+  padding: 0 28px !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  margin-top: 8px;
+  transition: background 0.2s ease, box-shadow 0.2s ease !important;
+
+  mat-icon {
+    margin-right: 6px;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    background: #2851C9 !important;
+    box-shadow: 0 6px 20px rgba(53,99,233,0.38) !important;
   }
 }

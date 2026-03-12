@@ -1,114 +1,102 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment.development';
-import { createClient } from '@supabase/supabase-js';
+import { inject, Injectable } from '@angular/core';
+import { from, Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { SupabaseService } from '../supabase/supabase.service';
+import type { Car } from '../../interfaces/car-interface';
 
-const supabase = createClient(environment.supabaseUrl, environment.supabaseKey,
-  {
-    global: { fetch: fetch.bind(globalThis) }
-  }
-);
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class DatabaseService {
+  private readonly supabase = inject(SupabaseService);
 
-  constructor() { }
-
-  async addFavorite(userId: string | undefined, carId: string) {
-    const { error } = await supabase
-      .from('favorites')
-      .insert([{ user_id: userId, car_id: carId }]);
-
-    if (error) console.error('Error adding favorite:', error);
+  private get db() {
+    return this.supabase.client;
   }
 
-  async removeFavorite(userId: string | undefined, carId: string) {
-    const { error } = await supabase
-      .from('favorites')
-      .delete()
-      .eq('user_id', userId)
-      .eq('car_id', carId);
-
-    if (error) console.error('Error removing favorite:', error);
+  addFavorite(userId: string, carId: string): Observable<void> {
+    return from(
+      this.db.from('favorites').insert([{ user_id: userId, car_id: carId }])
+    ).pipe(
+      map(({ error }) => { if (error) throw error; })
+    );
   }
 
-  async getUserFavorites(userId: string | undefined) {
-    if (!userId) {
-      console.error("Error: userId is empty or undefined.");
-      return [];
-    }
-
-    const { data, error } = await supabase
-      .from('favorites')
-      .select('car_id')
-      .eq('user_id', userId);
-
-    if (error) {
-      console.error('Error fetching favorites:', error);
-      return [];
-    }
-
-    return data.map(fav => fav.car_id); // Extract only car IDs
+  removeFavorite(userId: string, carId: string): Observable<void> {
+    return from(
+      this.db.from('favorites').delete().eq('user_id', userId).eq('car_id', carId)
+    ).pipe(
+      map(({ error }) => { if (error) throw error; })
+    );
   }
 
-   /**
-   * Get paginated cars from the database
-   * @param page Page number (starts from 1)
-   * @param pageSize Number of cars per page
-   */
-   async getCarsPaginated(page?: number, pageSize?: number) {
-    let query = supabase
-    .from('cars')
-    .select('*')
-    .order('model', { ascending: true });
-
-    // Apply pagination only if both page and pageSize are provided
-    if (page !== undefined && pageSize !== undefined) {
-      const from = (page - 1) * pageSize;
-      const to = from + pageSize - 1;
-      query = query.range(from, to);
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      console.error('Error fetching cars:', error);
-      return [];
-    }
-
-    return data;
+  getUserFavorites(userId: string): Observable<string[]> {
+    return from(
+      this.db.from('favorites').select('car_id').eq('user_id', userId)
+    ).pipe(
+      map(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []).map((fav: { car_id: string }) => fav.car_id);
+      }),
+      catchError(() => of([] as string[]))
+    );
   }
 
-  async getCarsByIds(carIds: string[]): Promise<any[]> {
-    if (!carIds.length) return [];
-
-    const { data, error } = await supabase
-      .from('cars')
-      .select('*')
-      .in('id', carIds); // Fetch all cars whose ID is in the provided array
-
-    if (error) {
-      console.error('Error fetching favorite cars:', error);
-      return [];
-    }
-
-    return data;
+  getCarsPaginated(page: number, pageSize: number): Observable<Car[]> {
+    const rangeFrom = (page - 1) * pageSize;
+    const rangeTo = rangeFrom + pageSize - 1;
+    return from(
+      this.db
+        .from('cars')
+        .select('*')
+        .order('model', { ascending: true })
+        .range(rangeFrom, rangeTo)
+    ).pipe(
+      map(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []) as Car[];
+      }),
+      catchError(() => of([] as Car[]))
+    );
   }
 
-  async searchCars(query: string) {
-    if (!query.trim()) return []; // Return empty if no query
+  getCarById(carId: string): Observable<Car | null> {
+    return from(
+      this.db.from('cars').select('*').eq('id', carId).single()
+    ).pipe(
+      map(({ data, error }) => {
+        if (error) throw error;
+        return data as Car;
+      }),
+      catchError(() => of(null))
+    );
+  }
 
-    const { data, error } = await supabase
-      .from('cars')
-      .select('*')
-      .or(`model.ilike.%${query}%`) // Search by model or description
+  getCarsByIds(carIds: string[]): Observable<Car[]> {
+    if (!carIds.length) return of([]);
+    return from(
+      this.db.from('cars').select('*').in('id', carIds)
+    ).pipe(
+      map(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []) as Car[];
+      }),
+      catchError(() => of([] as Car[]))
+    );
+  }
 
-    if (error) {
-      console.error('Error searching cars:', error);
-      return [];
-    }
-
-    return data;
+  searchCars(query: string): Observable<Car[]> {
+    const sanitized = query.trim().substring(0, 100);
+    if (!sanitized) return of([]);
+    return from(
+      this.db
+        .from('cars')
+        .select('*')
+        .or(`model.ilike.%${sanitized}%,type.ilike.%${sanitized}%`)
+    ).pipe(
+      map(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []) as Car[];
+      }),
+      catchError(() => of([] as Car[]))
+    );
   }
 }

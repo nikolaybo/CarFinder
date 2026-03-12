@@ -1,7 +1,7 @@
-export class GlobalConstants {
-  public static appTitle: string = "Car Finder";
-  public static appLogo: string = "/assets/images/logo.png";
-  public static appEmail: string = "example@gmail.com";
-  public static heroImage: string = "/assets/images/hero_image.png";
-  public static heroImageSmall: string = "/assets/images/hero_image_small.png";
-}
+export const APP_CONSTANTS = {
+  appTitle: 'Car Finder',
+  appLogo: '/assets/images/logo.png',
+  appEmail: 'example@gmail.com',
+  heroImage: '/assets/images/hero_image.png',
+  heroImageSmall: '/assets/images/hero_image_small.png',
+} as const;

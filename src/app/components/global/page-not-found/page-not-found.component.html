@@ -1,1 +1,17 @@
-<p>page-not-found works!</p>
+<div class="not-found">
+  <div class="not-found__inner">
+    <p class="not-found__code">404</p>
+    <h1 class="not-found__title">{{ 'notfound.title' | translate }}</h1>
+    <p class="not-found__desc">
+      {{ 'notfound.desc' | translate }}
+    </p>
+    <a class="not-found__btn" [routerLink]="['/']" mat-flat-button>
+      <mat-icon>arrow_back</mat-icon>
+      {{ 'notfound.btn' | translate }}
+    </a>
+  </div>
+
+  <div class="not-found__car" aria-hidden="true">
+    <mat-icon>directions_car</mat-icon>
+  </div>
+</div>

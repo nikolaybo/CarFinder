@@ -1,14 +1,40 @@
-<div class="container mx-auto my-5 flex lg:flex-row card-list justify-center">
-  @for (car of cars; track car.id) {
-    <app-car-item class="car-list__card lg:basis-1/4 basis-full max-w-full gap-9"
-     [car]="car">
-    </app-car-item>
+<div class="car-grid-wrap container mx-auto">
+
+  @if (isLoading() && cars().length === 0) {
+    <div class="car-grid-wrap__spinner" role="status" aria-label="Loading cars">
+      <mat-spinner diameter="52"></mat-spinner>
+      <p class="car-grid-wrap__spinner-text">{{ 'listing.loading' | translate }}</p>
+    </div>
   }
 
-  <!-- Load More Button -->
-  <div class="w-full flex justify-center my-5">
-    <button mat-button color="primary" (click)="loadCars()" [hidden]="!hasMoreCars" class="card-list__more !rounded">
-      Show more
-    </button>
+  <div class="car-grid">
+    @for (car of cars(); track car.id) {
+      <app-car-item [car]="car" />
+    }
   </div>
+
+  <div class="car-grid-wrap__more">
+    @if (hasMoreCars()) {
+      <button
+        class="car-grid-wrap__more-btn"
+        mat-flat-button
+        [disabled]="isLoading()"
+        (click)="loadCars()"
+        aria-label="Load more cars"
+      >
+        @if (isLoading()) {
+          <ng-container>
+            <mat-spinner diameter="18" color="accent"></mat-spinner>
+            Loading…
+          </ng-container>
+        } @else {
+          <ng-container>
+            <mat-icon>expand_more</mat-icon>
+            {{ 'listing.more' | translate }}
+          </ng-container>
+        }
+      </button>
+    }
+  </div>
+
 </div>

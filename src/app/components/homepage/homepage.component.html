@@ -1,11 +1,56 @@
-<div class="homepage container mx-auto mt-5">
-  <div class="homepage__heroimage">
-    <div class="homepage__heroimage--content flex flex-col gap-5">
-      <h1 class="text-4xl font-semibold text-white">The Best Platform for Car Rental</h1>
-      <p class="text-base text-white">Ease of doing a car rental safely and reliably. Of course at a low price.</p>
-    </div>
-    <button class="px-5 !rounded text-white mt-5" mat-flat-button extended>Rent now</button>
-  </div>
-</div>
+<section class="hero" aria-label="Hero section">
+  <div class="hero__body container mx-auto">
+    <div class="hero__text">
+      <div class="hero__badge anim-up">
+        <span class="hero__badge-dot"></span>
+        <span>{{ 'hero.badge' | translate }}</span>
+      </div>
 
-<app-car-list></app-car-list>
+      <h1 class="hero__title">
+        <span class="hero__title-line anim-up-1">{{ 'hero.title1' | translate }}</span>
+        <span class="hero__title-line hero__title-line--accent anim-up-2">{{ 'hero.title2' | translate }}</span>
+      </h1>
+
+      <p class="hero__subtitle anim-up-3">
+        {{ 'hero.subtitle' | translate }}
+      </p>
+
+      <div class="hero__actions anim-up-4">
+        <button class="hero__cta btn-primary" mat-flat-button (click)="scrollToCarList()"
+                aria-label="Browse available cars">
+          <span class="hero__cta-label">{{ 'hero.cta.browse' | translate }}</span>
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__stats">
+    <div class="container mx-auto hero__stats-inner">
+      <div class="hero__stat anim-up-3">
+        <span class="hero__stat-number">500<span class="hero__stat-plus">+</span></span>
+        <span class="hero__stat-label">{{ 'hero.stat.cars' | translate }}</span>
+      </div>
+      <div class="hero__stat-divider"></div>
+      <div class="hero__stat anim-up-4">
+        <span class="hero__stat-number">50<span class="hero__stat-plus">+</span></span>
+        <span class="hero__stat-label">{{ 'hero.stat.brands' | translate }}</span>
+      </div>
+      <div class="hero__stat-divider"></div>
+      <div class="hero__stat anim-up-5">
+        <span class="hero__stat-number">4.9<span class="hero__stat-plus">★</span></span>
+        <span class="hero__stat-label">{{ 'hero.stat.rating' | translate }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="listing-section" id="car-list">
+  <div class="listing-section__head container mx-auto">
+    <div class="listing-section__head-text">
+      <h2 class="listing-section__title scroll-reveal">{{ 'listing.title' | translate }}</h2>
+      <p class="listing-section__sub scroll-reveal-late">{{ 'listing.subtitle' | translate }}</p>
+    </div>
+  </div>
+  <app-car-list></app-car-list>
+</section>
