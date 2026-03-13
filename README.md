@@ -10,19 +10,18 @@ A full-stack car rental discovery platform built with modern Angular and a serve
 
 Built on Angular's latest release using exclusively **standalone components** — no `NgModule` boilerplate. Every component leverages:
 
-- **Signals** (`signal`, `computed`, `effect`) for fine-grained, synchronous reactive state — replacing `BehaviorSubject` and manual `markForCheck()` calls
+- **Signals** (`signal`, `computed`, `effect`) for fine-grained, synchronous reactive state
 - **`ChangeDetectionStrategy.OnPush`** across every component for maximum rendering performance
-- **`input()` / `output()`** signal-based I/O instead of decorator-based `@Input` / `@Output`
 - **`inject()`** function-style dependency injection over constructor injection
-- **`takeUntilDestroyed()`** + `DestroyRef` for automatic subscription cleanup without `ngOnDestroy`
+- **`takeUntilDestroyed()`** + `DestroyRef` for automatic subscription cleanup
 - **Lazy-loaded routes** via `loadComponent` — each page is a separate async chunk, reducing initial bundle size
-- **Server-Side Rendering (SSR)** via `@angular/ssr` + Express — pages are pre-rendered on the server for fast first-paint and SEO
+- **Server-Side Rendering (SSR)** via `@angular/ssr` + Express — pages are pre-rendered on the server for fast first-paint and SEO.
 
-### UI — Angular Material 19 + Tailwind CSS 3
+### UI — Angular Material 19 + Tailwind CSS
 
 A dual-layer styling system:
 
-- **Angular Material 19 (MDC-based)** provides accessible, production-grade UI primitives: form fields, buttons, icons, spinners, and snackbars — all with keyboard and screen-reader support out of the box
+- **Angular Material 19 (MDC-based)** provides accessible, production-grade UI primitives: form fields, buttons, icons, spinners, and more — all with keyboard and screen-reader support out of the box
 - **Tailwind CSS 3** handles layout utilities and responsive breakpoints (`container`, `mx-auto`, responsive grid variants)
 - **Custom design tokens** via CSS custom properties (`--primary`, `--radius-card`, `--shadow-hover`, etc.) keep the visual language consistent across all components
 - **BEM methodology** throughout all component templates and SCSS files — every element is self-documenting even without styling needs
@@ -34,8 +33,6 @@ A dual-layer styling system:
 
 - **Authentication** — email/password sign-up and sign-in via Supabase Auth, with session state propagated through a `ReplaySubject`-backed `AuthService`. Auth state changes trigger immediate reactive updates across the app
 - **PostgreSQL database** — cars and favourites are stored in a real Postgres instance. All queries go through the Supabase JS client and are wrapped in `Observable` streams via `from()` for seamless RxJS integration
-- **Row-level security** on the `favourites` table ensures users can only read and write their own data
-- **SSR compatibility** — `persistSession`, `autoRefreshToken`, and `detectSessionInUrl` are disabled on the server via `isPlatformBrowser` to prevent `NavigatorLockAcquireTimeoutError` in Node
 
 ### State Management
 
@@ -45,7 +42,7 @@ No third-party state library. State is managed at the appropriate layer:
 - **`CarService`** — holds a `signal<Car | null>` for the selected car, acting as a client-side cache between the list and detail views to avoid redundant network requests
 - **`AuthService`** — `ReplaySubject<UserResponse | null>(1)` backed by `onAuthStateChange`, exposing both the raw response and a clean `currentUser$: Observable<User | null>` for components
 
-### Runtime Internationalisation (i18n)
+### Runtime Internationalization (i18n)
 
 A lightweight, zero-dependency runtime translation system built in-house:
 
@@ -58,7 +55,7 @@ A lightweight, zero-dependency runtime translation system built in-house:
 
 - **esbuild** via `@angular-devkit/build-angular:application` — Angular's modern builder. Significantly faster cold builds and rebuilds than the legacy Webpack-based builder
 - **Development config** — `optimization: false`, `namedChunks: true`, `extractLicenses: false` for readable output during development
-- **Production config** — full minification, tree-shaking, and bundle budgets (1 MB warning / 2 MB error on initial chunk)
+- **Production config** — full minification, tree-shaking, and bundle budgets
 
 ---
 
@@ -108,5 +105,3 @@ ng build
 ```
 
 Open `http://localhost:4200` in your browser. The app reloads automatically on file changes.
-
-> **Note:** The project requires Supabase credentials. Copy your project URL and anon key into `src/environments/environment.ts` and `src/environments/environment.development.ts`. These files are excluded from version control (`.gitignore`) to protect credentials.

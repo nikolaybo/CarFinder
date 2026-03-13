@@ -1,7 +1,7 @@
 import { Directive, ElementRef, inject, input, PLATFORM_ID, Renderer2 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { distinctUntilChanged, takeUntilDestroyed } from 'rxjs';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { distinctUntilChanged } from 'rxjs';
 
 @Directive({
   selector: '[appSlotText]',
