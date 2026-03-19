@@ -8,7 +8,7 @@ import { DecimalPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, Subject, switchMap } from 'rxjs';
 import { of } from 'rxjs';
-import { DatabaseService } from '../../../services/database/database.service';
+import { CarRepository } from '../../../services/repositories/car.repository';
 import { CarService } from '../../../services/car/car.service';
 import { TranslationService } from '../../../services/translation/translation.service';
 import type { Car } from '../../../interfaces/car-interface';
@@ -26,7 +26,7 @@ export class SearchComponent {
   readonly searchResults = signal<Car[]>([]);
   readonly ts = inject(TranslationService);
 
-  private readonly dbService = inject(DatabaseService);
+  private readonly carRepo = inject(CarRepository);
   private readonly router = inject(Router);
   private readonly carService = inject(CarService);
   private readonly searchSubject = new Subject<string>();
@@ -40,7 +40,7 @@ export class SearchComponent {
           this.searchResults.set([]);
           return of([] as Car[]);
         }
-        return this.dbService.searchCars(query);
+        return this.carRepo.searchCars(query);
       }),
       takeUntilDestroyed()
     ).subscribe(results => this.searchResults.set(results));

@@ -12,7 +12,8 @@ import { of } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { DatabaseService } from '../../../services/database/database.service';
+import { CarRepository } from '../../../services/repositories/car.repository';
+import { FavoriteRepository } from '../../../services/repositories/favorite.repository';
 import { AuthService } from '../../../services/auth/auth.service';
 import { CarItemComponent } from '../../car-list/car-item/car-item.component';
 import { Car } from '../../../interfaces/car-interface';
@@ -30,20 +31,33 @@ export class ProfileComponent implements OnInit {
   readonly favoriteCars = signal<Car[]>([]);
   readonly isLoading = signal(false);
 
-  private readonly dbService = inject(DatabaseService);
+  private readonly carRepo = inject(CarRepository);
+  private readonly favoriteRepo = inject(FavoriteRepository);
   private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
 
+  /**
+   * Loads the current user's favourite cars in two sequential DB calls:
+   * first retrieves the list of saved car IDs, then fetches the full car
+   * records for those IDs. Skips both calls and shows an empty state if
+   * the user is not authenticated or has no saved favourites.
+   */
   ngOnInit(): void {
     this.isLoading.set(true);
 
     this.authService.currentUser$.pipe(
       take(1),
-      switchMap(user => user?.id ? this.dbService.getUserFavorites(user.id) : of([] as string[])),
-      switchMap(ids => ids.length ? this.dbService.getCarsByIds(ids) : of([] as Car[])),
+      switchMap(authenticatedUser =>
+        authenticatedUser?.id
+          ? this.favoriteRepo.getUserFavorites(authenticatedUser.id)
+          : of([] as string[])
+      ),
+      switchMap(favoriteCarIds =>
+        favoriteCarIds.length ? this.carRepo.getCarsByIds(favoriteCarIds) : of([] as Car[])
+      ),
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(cars => {
-      this.favoriteCars.set(cars);
+    ).subscribe(favoritedCars => {
+      this.favoriteCars.set(favoritedCars);
       this.isLoading.set(false);
     });
   }

@@ -1,36 +1,43 @@
-import { Directive, ElementRef, inject, input, PLATFORM_ID, Renderer2 } from '@angular/core';
+import { Directive, ElementRef, Input, NgZone, OnChanges, PLATFORM_ID, SimpleChanges, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { distinctUntilChanged } from 'rxjs';
 
-@Directive({
-  selector: '[appSlotText]',
-  standalone: true,
-})
-export class SlotTextDirective {
-  readonly appSlotText = input.required<string>();
+@Directive({ selector: '[appSlotText]', standalone: true })
+export class SlotTextDirective implements OnChanges {
+  @Input({ required: true }) appSlotText!: string;
 
-  constructor() {
-    const el = inject(ElementRef<HTMLElement>);
-    const renderer = inject(Renderer2);
-    const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly zone = inject(NgZone);
+  private readonly hostEl = inject(ElementRef<HTMLElement>).nativeElement as HTMLElement;
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-    if (!isBrowser) return;
+  /**
+   * Rebuilds the slot-machine letter animation whenever appSlotText changes.
+   * Each character gets its own <span> with a staggered CSS animation-delay
+   * so letters appear to "spin in" one after another.
+   *
+   * Uses direct DOM APIs instead of Renderer2 because Angular's AnimationRenderer
+   * (loaded by provideAnimationsAsync) defers Renderer2.removeChild calls to allow
+   * leave animations — making the cleanup while-loop spin forever. Direct APIs
+   * remove children synchronously and are safe since we own all child nodes here.
+   *
+   * Runs outside Angular's zone so DOM mutations don't cause Zone.js to schedule
+   * an extra CD cycle after the spans are inserted.
+   *
+   * @param changes - Angular's SimpleChanges map; only proceeds when appSlotText changed.
+   * @returns void — results are written directly to the host element's DOM.
+   */
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!this.isBrowser || !changes['appSlotText']) return;
 
-    toObservable(this.appSlotText).pipe(
-      distinctUntilChanged(),
-      takeUntilDestroyed()
-    ).subscribe(text => {
-      while (el.nativeElement.firstChild) {
-        renderer.removeChild(el.nativeElement, el.nativeElement.firstChild);
-      }
+    const text = changes['appSlotText'].currentValue as string;
 
-      text.split('').forEach((char: string, i: number) => {
-        const span: HTMLElement = renderer.createElement('span');
-        renderer.addClass(span, 'slot-letter');
-        renderer.setStyle(span, 'animation-delay', `${(0.1 + i * 0.09).toFixed(2)}s`);
-        renderer.setProperty(span, 'textContent', char);
-        renderer.appendChild(el.nativeElement, span);
+    this.zone.runOutsideAngular(() => {
+      this.hostEl.innerHTML = '';
+      text.split('').forEach((char: string, charIndex: number) => {
+        const letterSpan = document.createElement('span');
+        letterSpan.className = 'slot-letter';
+        letterSpan.style.animationDelay = `${(0.1 + charIndex * 0.09).toFixed(2)}s`;
+        letterSpan.textContent = char;
+        this.hostEl.appendChild(letterSpan);
       });
     });
   }

@@ -5,7 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotificationService } from '../../../services/notification/notification.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { FormErrorPipe } from '../../../common/pipes/form-error.pipe';
 import { APP_CONSTANTS } from '../../../common/global-constants';
@@ -28,7 +28,7 @@ export class LoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
-  private readonly snackBar = inject(MatSnackBar);
+  private readonly notificationService = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly loginForm = this.fb.nonNullable.group({
@@ -36,20 +36,23 @@ export class LoginComponent {
     password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
+  /**
+   * Submits the login form. On a Supabase auth error the message is surfaced
+   * via a top-centred snackbar so the user knows why sign-in failed. On success
+   * the user is sent to the homepage and the auth state listener in AuthService
+   * handles propagating the new session across the app.
+   */
   onSubmit(): void {
     if (this.loginForm.invalid) return;
     const { email, password } = this.loginForm.getRawValue();
 
     this.authService.logIn(email, password)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(result => {
-        if (result.error) {
-          this.snackBar.open(result.error.message, 'Close', {
-            horizontalPosition: 'center',
-            verticalPosition: 'top',
-            panelClass: ['snack-error'],
-          });
+      .subscribe(authResult => {
+        if (authResult.error) {
+          this.notificationService.showError(authResult.error.message);
         } else {
+          this.notificationService.showSuccess(this.ts.t('login.success'));
           this.router.navigateByUrl('/');
         }
       });

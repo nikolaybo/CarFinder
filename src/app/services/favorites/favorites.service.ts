@@ -1,49 +1,61 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { of, switchMap } from 'rxjs';
-import { DatabaseService } from '../database/database.service';
+import { catchError, of, switchMap } from 'rxjs';
+import { FavoriteRepository } from '../repositories/favorite.repository';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class FavoritesService {
-  private readonly db = inject(DatabaseService);
+  private readonly favoriteRepo = inject(FavoriteRepository);
   private readonly auth = inject(AuthService);
 
-  private readonly _ids = signal<Set<string>>(new Set());
-  readonly favoriteIds = this._ids.asReadonly();
+  private readonly _savedCarIds = signal<Set<string>>(new Set());
+  readonly favoriteIds = this._savedCarIds.asReadonly();
 
-  private userId: string | null = null;
+  private loggedInUserId: string | null = null;
 
+  /**
+   * Subscribes to auth state for the app lifetime. When a user signs in,
+   * fetches their saved car IDs from Supabase and caches them locally so
+   * heart-icon state renders without extra round-trips. On sign-out the
+   * cache is wiped immediately — stale favorites from the previous session
+   * must never bleed into the next user's view.
+   */
   constructor() {
     this.auth.currentUser$.pipe(
-      switchMap(user => {
-        this.userId = user?.id ?? null;
-        if (!this.userId) {
-          this._ids.set(new Set());
+      switchMap(authenticatedUser => {
+        this.loggedInUserId = authenticatedUser?.id ?? null;
+        if (!this.loggedInUserId) {
+          this._savedCarIds.set(new Set());
           return of([] as string[]);
         }
-        return this.db.getUserFavorites(this.userId);
+        return this.favoriteRepo.getUserFavorites(this.loggedInUserId);
       }),
       takeUntilDestroyed()
-    ).subscribe(ids => this._ids.set(new Set(ids)));
+    ).subscribe(savedCarIds => this._savedCarIds.set(new Set(savedCarIds)));
   }
 
   isFavorite(carId: string): boolean {
-    return this._ids().has(carId);
+    return this._savedCarIds().has(carId);
   }
 
+  /**
+   * Toggles a car's saved status. The Supabase write goes first — the local
+   * cache is only flipped on success, so a network error leaves the heart
+   * icon in its previous (truthful) state rather than showing a lie.
+   */
   toggle(carId: string): void {
-    if (!this.userId) return;
-    const was = this.isFavorite(carId);
-    const action$ = was
-      ? this.db.removeFavorite(this.userId, carId)
-      : this.db.addFavorite(this.userId, carId);
+    if (!this.loggedInUserId) return;
+    const alreadySaved = this.isFavorite(carId);
+    const persistChange$ = alreadySaved
+      ? this.favoriteRepo.removeFavorite(this.loggedInUserId, carId)
+      : this.favoriteRepo.addFavorite(this.loggedInUserId, carId);
 
-    action$.subscribe(() => {
-      this._ids.update(set => {
-        const next = new Set(set);
-        was ? next.delete(carId) : next.add(carId);
-        return next;
+    persistChange$.pipe(catchError(() => of(void 0))).subscribe(() => {
+      this._savedCarIds.update(currentlySaved => {
+        const nextSaved = new Set(currentlySaved);
+        alreadySaved ? nextSaved.delete(carId) : nextSaved.add(carId);
+        return nextSaved;
       });
     });
   }

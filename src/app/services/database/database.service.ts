@@ -1,102 +1,45 @@
 import { inject, Injectable } from '@angular/core';
-import { from, Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { SupabaseService } from '../supabase/supabase.service';
+import { Observable } from 'rxjs';
+import { CarRepository } from '../repositories/car.repository';
+import { FavoriteRepository } from '../repositories/favorite.repository';
 import type { Car } from '../../interfaces/car-interface';
 
+/**
+ * Thin facade that delegates all database operations to the narrower
+ * CarRepository and FavoriteRepository. Preserved so that existing
+ * specs and call sites can migrate to the repositories incrementally
+ * without a big-bang refactor.
+ */
 @Injectable({ providedIn: 'root' })
 export class DatabaseService {
-  private readonly supabase = inject(SupabaseService);
-
-  private get db() {
-    return this.supabase.client;
-  }
+  private readonly carRepo = inject(CarRepository);
+  private readonly favoriteRepo = inject(FavoriteRepository);
 
   addFavorite(userId: string, carId: string): Observable<void> {
-    return from(
-      this.db.from('favorites').insert([{ user_id: userId, car_id: carId }])
-    ).pipe(
-      map(({ error }) => { if (error) throw error; })
-    );
+    return this.favoriteRepo.addFavorite(userId, carId);
   }
 
   removeFavorite(userId: string, carId: string): Observable<void> {
-    return from(
-      this.db.from('favorites').delete().eq('user_id', userId).eq('car_id', carId)
-    ).pipe(
-      map(({ error }) => { if (error) throw error; })
-    );
+    return this.favoriteRepo.removeFavorite(userId, carId);
   }
 
   getUserFavorites(userId: string): Observable<string[]> {
-    return from(
-      this.db.from('favorites').select('car_id').eq('user_id', userId)
-    ).pipe(
-      map(({ data, error }) => {
-        if (error) throw error;
-        return (data ?? []).map((fav: { car_id: string }) => fav.car_id);
-      }),
-      catchError(() => of([] as string[]))
-    );
+    return this.favoriteRepo.getUserFavorites(userId);
   }
 
   getCarsPaginated(page: number, pageSize: number): Observable<Car[]> {
-    const rangeFrom = (page - 1) * pageSize;
-    const rangeTo = rangeFrom + pageSize - 1;
-    return from(
-      this.db
-        .from('cars')
-        .select('*')
-        .order('model', { ascending: true })
-        .range(rangeFrom, rangeTo)
-    ).pipe(
-      map(({ data, error }) => {
-        if (error) throw error;
-        return (data ?? []) as Car[];
-      }),
-      catchError(() => of([] as Car[]))
-    );
+    return this.carRepo.getCarsPaginated(page, pageSize);
   }
 
   getCarById(carId: string): Observable<Car | null> {
-    return from(
-      this.db.from('cars').select('*').eq('id', carId).single()
-    ).pipe(
-      map(({ data, error }) => {
-        if (error) throw error;
-        return data as Car;
-      }),
-      catchError(() => of(null))
-    );
+    return this.carRepo.getCarById(carId);
   }
 
   getCarsByIds(carIds: string[]): Observable<Car[]> {
-    if (!carIds.length) return of([]);
-    return from(
-      this.db.from('cars').select('*').in('id', carIds)
-    ).pipe(
-      map(({ data, error }) => {
-        if (error) throw error;
-        return (data ?? []) as Car[];
-      }),
-      catchError(() => of([] as Car[]))
-    );
+    return this.carRepo.getCarsByIds(carIds);
   }
 
   searchCars(query: string): Observable<Car[]> {
-    const sanitized = query.trim().substring(0, 100);
-    if (!sanitized) return of([]);
-    return from(
-      this.db
-        .from('cars')
-        .select('*')
-        .or(`model.ilike.%${sanitized}%,type.ilike.%${sanitized}%`)
-    ).pipe(
-      map(({ data, error }) => {
-        if (error) throw error;
-        return (data ?? []) as Car[];
-      }),
-      catchError(() => of([] as Car[]))
-    );
+    return this.carRepo.searchCars(query);
   }
 }

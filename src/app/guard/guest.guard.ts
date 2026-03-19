@@ -6,7 +6,7 @@ import { map, take } from 'rxjs/operators';
 export const guestGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
-  return auth.getUser().pipe(
+  return auth.user$.pipe(
     take(1),
     map(userResponse =>
       userResponse?.data?.user ? router.createUrlTree(['/']) : true

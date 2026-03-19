@@ -1,0 +1,12 @@
+node_modules
+dist
+.angular
+.git
+.vscode
+.idea
+coverage
+*.log
+*.tmp
+*.bak
+src/environments/environment*.ts
+SUPABASE_SETUP.md

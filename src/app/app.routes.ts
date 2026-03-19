@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './guard/guard.guard';
+import { authGuard } from './guard/auth.guard';
 import { guestGuard } from './guard/guest.guard';
 
 export const routes: Routes = [
@@ -8,7 +8,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./components/homepage/homepage.component').then(m => m.HomepageComponent),
     data: { title: 'Homepage', showInNavbar: false, showInFooter: false },
-    // canActivate: [authGuard],
+    canActivate: [authGuard],
   },
   {
     path: 'car-view/:id',
@@ -36,7 +36,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./components/user/profile/profile.component').then(m => m.ProfileComponent),
     data: { title: 'Profile', showInNavbar: true, showInFooter: false },
-    // canActivate: [authGuard],
+    canActivate: [authGuard],
   },
   {
     path: '**',

@@ -15,7 +15,7 @@
             <h1 class="car-view__model">{{ c.model }}</h1>
             <p class="car-view__type">{{ c.type }}</p>
             <div class="car-view__hero-price">
-              @if (c.discounted_price) {
+              @if (c.discounted_price < c.price) {
                 <span class="car-view__price-main">${{ c.discounted_price | number:'1.2-2' }}<small class="car-view__price-suffix">/day</small></span>
                 <span class="car-view__price-old">${{ c.price | number:'1.2-2' }}</span>
               } @else {

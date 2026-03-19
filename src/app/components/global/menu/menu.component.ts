@@ -22,7 +22,7 @@ export class MenuComponent {
   private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
-    this.authService.getUser()
+    this.authService.user$
       .pipe(takeUntilDestroyed())
       .subscribe(userResponse => {
         this.isLoggedIn.set(!!userResponse?.data?.user);

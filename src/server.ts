@@ -15,18 +15,6 @@ const app = express();
 const angularApp = new AngularNodeAppEngine();
 
 /**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/**', (req, res) => {
- *   // Handle API request
- * });
- * ```
- */
-
-/**
  * Serve static files from /browser
  */
 app.use(
@@ -39,13 +27,36 @@ app.use(
 
 /**
  * Handle all other requests by rendering the Angular application.
+ * For HTML responses, injects window.__env before </head> so the browser-side
+ * Supabase client can read credentials without them being baked into the bundle.
  */
 app.use('/**', (req, res, next) => {
   angularApp
     .handle(req)
-    .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
-    )
+    .then(async (response) => {
+      if (!response) return next();
+
+      const contentType = response.headers.get('content-type') ?? '';
+      if (!contentType.includes('text/html')) {
+        return writeResponseToNodeResponse(response, res);
+      }
+
+      const html = await response.text();
+      const envScript =
+        `<script>window['__env']={` +
+        `supabaseUrl:'${process.env['SUPABASE_URL'] ?? ''}',` +
+        `supabaseKey:'${process.env['SUPABASE_KEY'] ?? ''}'};</script>`;
+      const modified = html.replace('</head>', `${envScript}</head>`);
+
+      res.status(response.status);
+      response.headers.forEach((value, key) => {
+        // Skip content-length — the injected script changes the byte count
+        if (key.toLowerCase() !== 'content-length') {
+          res.setHeader(key, value);
+        }
+      });
+      res.send(modified);
+    })
     .catch(next);
 });
 

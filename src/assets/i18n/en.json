@@ -40,6 +40,7 @@
   "login.email": "Email address",
   "login.password": "Password",
   "login.submit": "Sign In",
+  "login.success": "Welcome back! You are now signed in.",
   "login.switch": "Don't have an account?",
   "login.switch.link": "Create one free",
 
@@ -52,6 +53,7 @@
   "register.email": "Email address",
   "register.password": "Password",
   "register.submit": "Create Account",
+  "register.success": "Account created! Welcome to Car Finder.",
   "register.switch": "Already have an account?",
   "register.switch.link": "Sign in",
 

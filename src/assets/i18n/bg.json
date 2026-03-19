@@ -40,6 +40,7 @@
   "login.email": "Имейл адрес",
   "login.password": "Парола",
   "login.submit": "Вход",
+  "login.success": "Добре дошъл! Влязъл си успешно.",
   "login.switch": "Нямаш акаунт?",
   "login.switch.link": "Създай безплатно",
 
@@ -52,6 +53,7 @@
   "register.email": "Имейл адрес",
   "register.password": "Парола",
   "register.submit": "Създай акаунт",
+  "register.success": "Акаунтът е създаден! Добре дошъл в Car Finder.",
   "register.switch": "Вече имаш акаунт?",
   "register.switch.link": "Влез",
 

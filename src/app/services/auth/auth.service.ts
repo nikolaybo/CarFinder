@@ -5,14 +5,14 @@ import { SupabaseService } from '../supabase/supabase.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService implements OnDestroy {
+  private readonly supabase = inject(SupabaseService);
   private readonly userSubject = new ReplaySubject<UserResponse | null>(1);
+  private authSubscription: { unsubscribe: () => void } | null = null;
+
   readonly user$: Observable<UserResponse | null> = this.userSubject.asObservable();
   readonly currentUser$: Observable<User | null> = this.user$.pipe(
     map(response => response?.data?.user ?? null)
   );
-
-  private readonly supabase = inject(SupabaseService);
-  private authSubscription: { unsubscribe: () => void } | null = null;
 
   constructor() {
     this.initAuthState();
@@ -40,18 +40,20 @@ export class AuthService implements OnDestroy {
     );
   }
 
-  getUser(): Observable<UserResponse | null> {
-    return this.user$;
-  }
-
+  /**
+   * Seeds the auth state from the persisted Supabase session, then subscribes to
+   * auth state changes so user$ stays current for the lifetime of the app.
+   * The initial getUser() call is awaited so that user$ emits before the first
+   * route guard check runs.
+   */
   private async initAuthState(): Promise<void> {
-    const { data, error } = await this.supabase.client.auth.getUser();
-    this.userSubject.next(error ? null : (data ? { data, error: null } : null));
+    const { data: sessionData, error: sessionError } = await this.supabase.client.auth.getUser();
+    this.userSubject.next(sessionError ? null : (sessionData ? { data: sessionData, error: null } : null));
 
     const { data: { subscription } } = this.supabase.client.auth.onAuthStateChange(
-      (_event, session) => {
-        if (session?.user) {
-          this.userSubject.next({ data: { user: session.user }, error: null });
+      (_event, activeSession) => {
+        if (activeSession?.user) {
+          this.userSubject.next({ data: { user: activeSession.user }, error: null });
         } else {
           this.userSubject.next(null);
         }
