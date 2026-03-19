@@ -9,7 +9,7 @@
       loading="lazy"
     />
 
-    @if (car().discounted_price) {
+    @if (car().discounted_price < car().price) {
       <span class="car-card__discount-badge"
             aria-label="Discounted price available">
         {{ ((car().price - car().discounted_price) / car().price * 100) | number:'1.0-0' }}% OFF
@@ -54,7 +54,7 @@
   <!-- Footer -->
   <div class="car-card__footer">
     <div class="car-card__price">
-      @if (car().discounted_price) {
+      @if (car().discounted_price < car().price) {
         <span class="car-card__price-main">${{ car().discounted_price | number:'1.2-2' }}<small class="car-card__price-suffix">/day</small></span>
         <span class="car-card__price-old">${{ car().price | number:'1.2-2' }}</span>
       } @else {

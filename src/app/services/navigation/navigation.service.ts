@@ -1,34 +1,24 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router, Route } from '@angular/router';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class NavigationService {
-  router: Router;
+export type NavContext = 'navbar' | 'footer';
 
-  constructor(router: Router) {
-    this.router = router;
-   }
+@Injectable({ providedIn: 'root' })
+export class NavigationService {
+  private readonly router = inject(Router);
 
   getNavigationRoutes(type?: string): Route[] {
-    let availableRoutes: Route[] = this.flattenRoutes(this.router.config);
-    switch (type) {
-      case "navbar":
-        availableRoutes = availableRoutes.filter(route => route.data?.["showInNavbar"]);
-        break;
-      case "footer":
-        availableRoutes = availableRoutes.filter(route => route.data?.["showInFooter"]);
-        break;
-    }
-    return availableRoutes;
+    const allRoutes = this.flattenRoutes(this.router.config);
+    if (type === 'navbar') return allRoutes.filter(r => r.data?.['showInNavbar']);
+    if (type === 'footer') return allRoutes.filter(r => r.data?.['showInFooter']);
+    return allRoutes;
   }
 
   private flattenRoutes(routes: Route[]): Route[] {
-    const seen = new Set(); // Track unique routes
+    const visitedPaths = new Set<string | undefined>();
     return routes.flatMap(route => {
-      if (seen.has(route.path)) return []; // Avoid duplicates
-      seen.add(route.path);
+      if (visitedPaths.has(route.path)) return [];
+      visitedPaths.add(route.path);
       return route.children ? [route, ...this.flattenRoutes(route.children)] : [route];
     });
   }

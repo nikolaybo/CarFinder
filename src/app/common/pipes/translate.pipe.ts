@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, effect, inject, Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslationService } from '../../services/translation/translation.service';
 
 @Pipe({
@@ -8,14 +8,6 @@ import { TranslationService } from '../../services/translation/translation.servi
 })
 export class TranslatePipe implements PipeTransform {
   private readonly ts = inject(TranslationService);
-  private readonly cdr = inject(ChangeDetectorRef);
-
-  constructor() {
-    effect(() => {
-      this.ts.locale(); // subscribe to locale changes
-      this.cdr.markForCheck();
-    });
-  }
 
   transform(key: string): string {
     return this.ts.t(key);
