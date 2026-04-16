@@ -32,7 +32,7 @@ export class CarRepository {
         if (error) throw error;
         return (data ?? []) as Car[];
       }),
-      catchError(() => of([] as Car[]))
+      catchError(err => { console.error('[CarRepository]', err); return of([] as Car[]); })
     );
   }
 
@@ -44,7 +44,7 @@ export class CarRepository {
         if (error) throw error;
         return data as Car;
       }),
-      catchError(() => of(null))
+      catchError(err => { console.error('[CarRepository.getCarById]', err); return of(null); })
     );
   }
 
@@ -57,7 +57,7 @@ export class CarRepository {
         if (error) throw error;
         return (data ?? []) as Car[];
       }),
-      catchError(() => of([] as Car[]))
+      catchError(err => { console.error('[CarRepository]', err); return of([] as Car[]); })
     );
   }
 
@@ -79,7 +79,7 @@ export class CarRepository {
         if (error) throw error;
         return (data ?? []) as Car[];
       }),
-      catchError(() => of([] as Car[]))
+      catchError(err => { console.error('[CarRepository]', err); return of([] as Car[]); })
     );
   }
 }

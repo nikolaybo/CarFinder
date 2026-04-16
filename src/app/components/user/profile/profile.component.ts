@@ -56,9 +56,15 @@ export class ProfileComponent implements OnInit {
         favoriteCarIds.length ? this.carRepo.getCarsByIds(favoriteCarIds) : of([] as Car[])
       ),
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(favoritedCars => {
-      this.favoriteCars.set(favoritedCars);
-      this.isLoading.set(false);
+    ).subscribe({
+      next: favoritedCars => {
+        this.favoriteCars.set(favoritedCars);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.favoriteCars.set([]);
+        this.isLoading.set(false);
+      },
     });
   }
 }

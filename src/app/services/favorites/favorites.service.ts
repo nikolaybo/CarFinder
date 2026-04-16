@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, of, switchMap } from 'rxjs';
+import { of, switchMap } from 'rxjs';
 import { FavoriteRepository } from '../repositories/favorite.repository';
 import { AuthService } from '../auth/auth.service';
 
@@ -51,12 +51,18 @@ export class FavoritesService {
       ? this.favoriteRepo.removeFavorite(this.loggedInUserId, carId)
       : this.favoriteRepo.addFavorite(this.loggedInUserId, carId);
 
-    persistChange$.pipe(catchError(() => of(void 0))).subscribe(() => {
-      this._savedCarIds.update(currentlySaved => {
-        const nextSaved = new Set(currentlySaved);
-        alreadySaved ? nextSaved.delete(carId) : nextSaved.add(carId);
-        return nextSaved;
-      });
+    persistChange$.subscribe({
+      next: () => {
+        this._savedCarIds.update(currentlySaved => {
+          const nextSaved = new Set(currentlySaved);
+          alreadySaved ? nextSaved.delete(carId) : nextSaved.add(carId);
+          return nextSaved;
+        });
+      },
+      error: () => {
+        // Network error — leave cache in its previous (truthful) state so
+        // the heart icon doesn't lie about what's actually saved in Supabase.
+      },
     });
   }
 }

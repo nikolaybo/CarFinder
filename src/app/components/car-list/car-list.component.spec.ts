@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { CarListComponent } from './car-list.component';
 import { CarRepository } from '../../services/repositories/car.repository';
 import { TranslationService } from '../../services/translation/translation.service';
@@ -102,6 +102,28 @@ describe('CarListComponent', () => {
     tick();
     expect(component.cars().length).toBe(6);
     expect(carRepoSpy.getCarsPaginated).toHaveBeenCalledWith(2, 5);
+  }));
+
+  it('BUG: clears isLoading when getCarsPaginated errors (no stuck spinner)', fakeAsync(async () => {
+    carRepoSpy = jasmine.createSpyObj('CarRepository', ['getCarsPaginated']);
+    carRepoSpy.getCarsPaginated.and.returnValue(throwError(() => new Error('db down')));
+    TestBed.configureTestingModule({
+      imports: [CarListComponent],
+      providers: [
+        provideRouter([]),
+        provideNoopAnimations(),
+        { provide: CarRepository, useValue: carRepoSpy },
+        { provide: TranslationService, useValue: createMockTranslationService() },
+        { provide: FavoritesService, useValue: createFavoritesServiceSpy() },
+      ],
+    });
+    await TestBed.compileComponents();
+    fixture = TestBed.createComponent(CarListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    tick();
+    expect(component.isLoading()).toBeFalse();
+    expect(component.hasMoreCars()).toBeFalse();
   }));
 
   it('does not call loadCars() again while isLoading is true', fakeAsync(async () => {

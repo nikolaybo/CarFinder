@@ -35,15 +35,21 @@ export class CarListStore {
     this.carRepo
       .getCarsPaginated(this.currentPage, this.pageSize)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(fetchedCars => {
-        if (fetchedCars.length > 0) {
-          this.cars.update(currentCars => [...currentCars, ...fetchedCars]);
-          this.currentPage++;
-        }
-        if (fetchedCars.length < this.pageSize) {
+      .subscribe({
+        next: fetchedCars => {
+          if (fetchedCars.length > 0) {
+            this.cars.update(currentCars => [...currentCars, ...fetchedCars]);
+            this.currentPage++;
+          }
+          if (fetchedCars.length < this.pageSize) {
+            this.hasMore.set(false);
+          }
+          this.isLoading.set(false);
+        },
+        error: () => {
           this.hasMore.set(false);
-        }
-        this.isLoading.set(false);
+          this.isLoading.set(false);
+        },
       });
   }
 }

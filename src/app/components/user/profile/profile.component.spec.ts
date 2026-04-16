@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { ProfileComponent } from './profile.component';
 import { AuthService } from '../../../services/auth/auth.service';
 import { CarRepository } from '../../../services/repositories/car.repository';
@@ -85,6 +85,18 @@ describe('ProfileComponent', () => {
     fixture.detectChanges();
     tick();
     expect(favoriteRepoSpy.getUserFavorites).not.toHaveBeenCalled();
+    expect(component.favoriteCars()).toEqual([]);
+  }));
+
+  it('BUG: clears isLoading and favoriteCars when getCarsByIds fails', fakeAsync(async () => {
+    setupTestBed(mockUser, ['car-1'], [mockCar]);
+    carRepoSpy.getCarsByIds.and.returnValue(throwError(() => new Error('db down')));
+    await TestBed.compileComponents();
+    fixture = TestBed.createComponent(ProfileComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    tick();
+    expect(component.isLoading()).toBeFalse();
     expect(component.favoriteCars()).toEqual([]);
   }));
 

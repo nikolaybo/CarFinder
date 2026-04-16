@@ -1,5 +1,5 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { Subject, of } from 'rxjs';
+import { Subject, of, throwError } from 'rxjs';
 import { FavoritesService } from './favorites.service';
 import { AuthService } from '../auth/auth.service';
 import { FavoriteRepository } from '../repositories/favorite.repository';
@@ -82,6 +82,24 @@ describe('FavoritesService', () => {
     tick();
     expect(favoriteRepoSpy.removeFavorite).toHaveBeenCalledWith(mockUser.id, 'car-1');
     expect(service.isFavorite('car-1')).toBeFalse();
+  }));
+
+  it('BUG: toggle() does NOT flip local cache when addFavorite fails', fakeAsync(() => {
+    currentUser$.next(mockUser);
+    tick();
+    favoriteRepoSpy.addFavorite.and.returnValue(throwError(() => new Error('network')));
+    service.toggle('car-3');
+    tick();
+    expect(service.isFavorite('car-3')).toBeFalse();
+  }));
+
+  it('BUG: toggle() does NOT flip local cache when removeFavorite fails', fakeAsync(() => {
+    currentUser$.next(mockUser);
+    tick();
+    favoriteRepoSpy.removeFavorite.and.returnValue(throwError(() => new Error('network')));
+    service.toggle('car-1');
+    tick();
+    expect(service.isFavorite('car-1')).toBeTrue();
   }));
 
   it('toggle() does nothing when no user is logged in', fakeAsync(() => {
