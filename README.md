@@ -2,6 +2,24 @@
 
 A full-stack car rental discovery platform built with modern Angular and a serverless backend. Users can browse, search, and save their favourite vehicles, with a fully responsive UI and real-time data from Supabase.
 
+[![CI](https://github.com/nikolaybo/CarFinder/actions/workflows/ci.yml/badge.svg)](https://github.com/nikolaybo/CarFinder/actions/workflows/ci.yml)
+[![E2E](https://github.com/nikolaybo/CarFinder/actions/workflows/e2e.yml/badge.svg)](https://github.com/nikolaybo/CarFinder/actions/workflows/e2e.yml)
+[![CodeQL](https://github.com/nikolaybo/CarFinder/actions/workflows/codeql.yml/badge.svg)](https://github.com/nikolaybo/CarFinder/actions/workflows/codeql.yml)
+![Angular](https://img.shields.io/badge/Angular-19-DD0031?logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?logo=supabase&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+> **Live demo:** _coming soon_ — deployment in progress on Vercel.
+
+## Screenshots
+
+| Homepage | Car detail | Login |
+| --- | --- | --- |
+| ![Homepage](docs/screenshots/homepage.png) | ![Car detail](docs/screenshots/car-detail.png) | ![Login](docs/screenshots/login.png) |
+
+> Drop PNGs into `docs/screenshots/` to populate this table. Recommended dimensions: 1280×720, ≤300 KB each.
+
 ---
 
 ## Tech Stack
@@ -105,3 +123,65 @@ ng build
 ```
 
 Open `http://localhost:4200` in your browser. The app reloads automatically on file changes.
+
+---
+
+## Testing
+
+The project ships with three layers of tests:
+
+| Layer | Tooling | Command |
+| --- | --- | --- |
+| Unit | Karma + Jasmine | `npm test` (watch) / `npm run test:ci` (single run + coverage) |
+| Structural | Jasmine (no TestBed) | included in `npm test` — see `src/app/app.routes.spec.ts` |
+| End-to-end | [Playwright](https://playwright.dev) | `npm run e2e:install` once, then `npm run e2e` |
+
+E2E suites live under `e2e/` and follow the **Page Object** pattern — selectors are centralised in `e2e/pages/*` so a template change touches one file. Shared fixtures (e.g. `unauthenticatedPage`, which clears any persisted Supabase session) live in `e2e/fixtures.ts`.
+
+```bash
+# Run unit tests in CI mode (headless Chrome, single run, coverage to /coverage)
+npm run test:ci
+
+# Run Playwright tests against a freshly-spawned dev server
+npm run e2e
+
+# Interactive Playwright UI — great for debugging selectors
+npm run e2e:ui
+```
+
+Coverage targets ≥ 80% on services, guards, and pipes.
+
+---
+
+## Continuous Integration
+
+Three GitHub Actions workflows guard `main` and every PR:
+
+| Workflow | Triggers | What it does |
+| --- | --- | --- |
+| **CI** (`.github/workflows/ci.yml`) | push / PR | Production build, headless unit tests with coverage, Docker image smoke build |
+| **E2E** (`.github/workflows/e2e.yml`) | push / PR | Playwright suite (chromium + mobile), uploads HTML report and failure traces |
+| **CodeQL** (`.github/workflows/codeql.yml`) | push / PR / weekly | Static analysis for JS/TS security vulnerabilities |
+
+Dependencies are kept fresh by `dependabot.yml` — grouped weekly npm updates and monthly GitHub Actions bumps.
+
+### Docker
+
+```bash
+docker compose up --build
+```
+
+The Dockerfile produces a small Node image that runs the SSR server.
+
+---
+
+## Contributing
+
+1. Branch off `main` (`feat/...`, `fix/...`, `test/...`, `docs/...`, `ci/...`).
+2. Run `npm run test:ci && npm run e2e` locally before opening a PR.
+3. Use Conventional Commit messages (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`, `perf:`, `ci:`).
+4. PRs must pass CI, E2E, and CodeQL before review.
+
+## License
+
+Released under the [MIT License](LICENSE).
