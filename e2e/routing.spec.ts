@@ -3,9 +3,8 @@ import { test, expect } from './fixtures';
 test.describe('Routing & guards', () => {
   test('unknown route renders the 404 component', async ({ page }) => {
     await page.goto('/this-route-does-not-exist');
-    // Page-not-found component should render *something* visible from a 404 view.
-    // We assert no router-outlet error and that body text is non-empty.
-    await expect(page.locator('app-page-not-found, [data-testid="page-not-found"], main, body')).toBeVisible();
+    // The page-not-found component should render on unknown routes.
+    await expect(page.locator('app-page-not-found')).toBeVisible();
     const bodyText = (await page.locator('body').innerText()).toLowerCase();
     expect(bodyText.length).toBeGreaterThan(0);
   });
