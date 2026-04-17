@@ -32,6 +32,12 @@ jobs:
       - name: Run Playwright tests
         env:
           CI: 'true'
+          # Placeholder credentials so the SSR SupabaseService can
+          # instantiate its client. The current e2e suite only covers
+          # pre-auth flows (redirects + form validation) and never hits
+          # the Supabase API, so real credentials are not required.
+          SUPABASE_URL: 'https://placeholder.supabase.co'
+          SUPABASE_KEY: 'placeholder-anon-key'
         run: npm run e2e
 
       - name: Upload Playwright report
