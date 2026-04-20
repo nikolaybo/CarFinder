@@ -9,9 +9,11 @@ export function getRuntimeConfig(): { supabaseUrl: string; supabaseKey: string }
   if (typeof window !== 'undefined' && window.__env) {
     return window.__env;
   }
-  // Server (SSR) context — read directly from process environment
+  // Server (SSR/Node) context — read directly from process environment.
+  // Guard required: `process` does not exist in browser or Karma test environments.
+  const env = typeof process !== 'undefined' ? process.env : {};
   return {
-    supabaseUrl: process.env['SUPABASE_URL'] ?? '',
-    supabaseKey: process.env['SUPABASE_KEY'] ?? '',
+    supabaseUrl: env['SUPABASE_URL'] ?? '',
+    supabaseKey: env['SUPABASE_KEY'] ?? '',
   };
 }
