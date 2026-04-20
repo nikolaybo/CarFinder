@@ -10,15 +10,11 @@ A full-stack car rental discovery platform built with modern Angular and a serve
 ![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?logo=supabase&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-> **Live demo:** _coming soon_ — deployment in progress on Vercel.
-
 ## Screenshots
 
 | Homepage | Car detail | Login |
 | --- | --- | --- |
 | ![Homepage](docs/screenshots/homepage.png) | ![Car detail](docs/screenshots/car-detail.png) | ![Login](docs/screenshots/login.png) |
-
-> Drop PNGs into `docs/screenshots/` to populate this table. Recommended dimensions: 1280×720, ≤300 KB each.
 
 ---
 
