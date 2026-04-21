@@ -10,6 +10,8 @@ A full-stack car rental discovery platform built with modern Angular and a serve
 ![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?logo=supabase&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
+**Live demo (Staging):** https://carfinder-z4ir.onrender.com/
+
 ## Screenshots
 
 | Homepage | Car detail | Login |
