@@ -18,6 +18,49 @@ A full-stack car rental discovery platform built with modern Angular and a serve
 
 ---
 
+## Running with Docker
+
+### Prerequisites
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or Docker Engine + Compose)
+- A [Supabase](https://supabase.com) project with the URL and anon key ready
+
+### Steps
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/nikolaybo/CarFinder.git
+cd CarFinder
+
+# 2. Create your environment file
+cp .env.example .env
+```
+
+Open `.env` and fill in your Supabase credentials:
+
+```env
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_KEY=your-anon-public-key
+PORT=4000
+```
+
+```bash
+# 3. Build the image and start the container
+docker compose up --build
+
+# 4. Open the app
+open http://localhost:4000
+```
+
+To stop:
+
+```bash
+docker compose down
+```
+
+> The container runs the Angular SSR server on port `4000`. All routes are client-rendered — Supabase credentials are injected at request time via `window.__env` so they are never baked into the static bundle.
+
+---
+
 ## Tech Stack
 
 ### Frontend Framework — Angular 19
