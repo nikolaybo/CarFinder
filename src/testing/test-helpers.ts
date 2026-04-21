@@ -110,6 +110,15 @@ export function createQueryChain(result: { data: any; error: any }): any {
   return q;
 }
 
+export function createSupabaseServiceSpy() {
+  return {
+    client: {
+      auth: createSupabaseAuthSpy(),
+      from: jasmine.createSpy('from').and.returnValue(createQueryChain({ data: [], error: null })),
+    },
+  };
+}
+
 export function createSupabaseAuthSpy(overrides: Record<string, any> = {}) {
   return {
     signUp: jasmine.createSpy('signUp').and.returnValue(
