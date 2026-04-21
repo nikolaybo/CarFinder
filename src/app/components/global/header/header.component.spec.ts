@@ -7,11 +7,13 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { DatabaseService } from '../../../services/database/database.service';
 import { TranslationService } from '../../../services/translation/translation.service';
 import { FavoritesService } from '../../../services/favorites/favorites.service';
+import { SupabaseService } from '../../../services/supabase/supabase.service';
 import {
   createMockTranslationService,
   createDatabaseServiceSpy,
   createFavoritesServiceSpy,
   createAuthServiceSpy,
+  createSupabaseServiceSpy,
 } from '../../../../testing/test-helpers';
 import type { Locale } from '../../../services/translation/translation.service';
 
@@ -33,6 +35,7 @@ describe('HeaderComponent', () => {
         { provide: AuthService, useValue: authSpy },
         { provide: DatabaseService, useValue: createDatabaseServiceSpy() },
         { provide: FavoritesService, useValue: createFavoritesServiceSpy() },
+        { provide: SupabaseService, useValue: createSupabaseServiceSpy() },
       ],
     }).compileComponents();
 

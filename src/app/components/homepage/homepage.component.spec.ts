@@ -6,10 +6,12 @@ import { HomepageComponent } from './homepage.component';
 import { DatabaseService } from '../../services/database/database.service';
 import { TranslationService } from '../../services/translation/translation.service';
 import { FavoritesService } from '../../services/favorites/favorites.service';
+import { SupabaseService } from '../../services/supabase/supabase.service';
 import {
   createMockTranslationService,
   createDatabaseServiceSpy,
   createFavoritesServiceSpy,
+  createSupabaseServiceSpy,
 } from '../../../testing/test-helpers';
 
 describe('HomepageComponent', () => {
@@ -26,6 +28,7 @@ describe('HomepageComponent', () => {
         { provide: DatabaseService, useValue: createDatabaseServiceSpy() },
         { provide: TranslationService, useValue: createMockTranslationService() },
         { provide: FavoritesService, useValue: createFavoritesServiceSpy() },
+        { provide: SupabaseService, useValue: createSupabaseServiceSpy() },
       ],
     }).compileComponents();
 

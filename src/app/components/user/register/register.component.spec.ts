@@ -18,7 +18,7 @@ describe('RegisterComponent', () => {
   beforeEach(async () => {
     authSpy = jasmine.createSpyObj('AuthService', ['register']);
     authSpy.register.and.returnValue(of({ data: { user: mockUser, session: null }, error: null }));
-    notificationSpy = jasmine.createSpyObj('NotificationService', ['showError']);
+    notificationSpy = jasmine.createSpyObj('NotificationService', ['showError', 'showSuccess']);
 
     await TestBed.configureTestingModule({
       imports: [RegisterComponent],
